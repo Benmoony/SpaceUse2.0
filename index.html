@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
+    <link href="./styles.css" rel="stylesheet">
+    <link href="./format.css" rel="stylesheet">
+    <link href="./layout.css" rel="stylesheet">
+    <title>Hello World!</title>
+  </head>
+  <body>
+    <h1>Welcome to SpaceUse2.0</h1>
+
+
+    <!-- This is the Form to get the Surveyor's Name-->
+    <form class="login" onSubmit="sendForm(event)" id="ipcNameForm">
+      <fieldset >
+        <legend>Please Enter Surveyor's Name</legend>
+        <label for="fname">First Name: </label>
+        <input type="text" id="fname" required="required">
+        <label for="lname">Password: </label>
+        <input type="text" id="lname" required="required">
+        <input type="submit" id="submitname" value="submit">
+      </fieldset>
+    </form>
+
+
+    <!-- Load in Home Menu Here -->
+    <!-- This menu will include all of the possible options for the survey-->
+    <div id="home">
+      <button id="backBtn">Quit</button>
+
+    </div>
+
+    <!-- Survey Interface Load In Here-->
+    <!-- This View will include all UI elements of the Survey Map-->
+
+    <!-- Pop Up HTML-->
+    <!-- This Section will include the pop up interface that will occur on touch screen-->
+
+    <!-- Process CSV and Download-->
+    <!-- UI elements for CSV file conversion processing and download-->
+
+    
+    <!--Load CSV File and View indivdual Survey-->
+
+
+    <!--Load CSV File Folder and View Multiple Survey's-->
+
+
+    <!-- You can also require other files to run in this process -->
+    <!-- Require Javascript files here to be run alongside render process for processing data being added to global survey object-->
+    <script src="./renderer.js"></script>
+  </body>
+</html>
