@@ -9,7 +9,7 @@ const getNameForm = document.getElementById('ipcNameForm');
 const home = document.getElementById('home');
 const backBtn = document.getElementById('backBtn');
 
-
+//Process Surveyors Name
 getNameForm.addEventListener('submit', function (event){
     event.preventDefault() // stop the form from submitting
     let firstname = document.getElementById("fname").value;
@@ -20,6 +20,8 @@ getNameForm.addEventListener('submit', function (event){
     home.style.display = 'block';
 })
 
+
+//Functionality for Back Button
 backBtn.addEventListener('click',()=>{
     ipcRenderer.send('back-to-previous');
     home.style.display = "none";
