@@ -1,11 +1,10 @@
 // Modules to control application life and create native browser window
-const {app, Tray, BrowserWindow, Menu, dialog, ipcMain} = require('electron')
+const { app, Tray, BrowserWindow, Menu, dialog, ipcMain} = require('electron')
 const path = require('path');
 const url = require('url');
 const fs = require('fs');
 const os = require('os');
 const global = require('./global.js');
-
 
 
 //Global reference to the window object to prevent it being closed automatically when the JavaScript object is garbage collected
@@ -17,7 +16,12 @@ function createWindow () {
     width: 1920,
     height: 1080,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      nodeIntegration: true,
+      nodeIntegrationInWorker: true,
+      nodeIntegrationInSubFrames: true,
+      contextIsolation: false,
+
+      //preload: path.join(__dirname, 'preload.js')
     }
   })
 
@@ -76,6 +80,8 @@ ipcMain.on('back-to-previous',()=>{
   console.log("Memory Cleared, type name again");
 });
 
+
+//Create Leaftlet objects here and send to window
 
 
 

@@ -4,7 +4,6 @@
 const {ipcRenderer, contextBridge, remote} = require('electron');
 
 
-
 contextBridge.exposeInMainWorld("ipcRenderer",ipcRenderer)
 
 // Expose protected methods that allow the renderer process to use
@@ -25,8 +24,13 @@ contextBridge.exposeInMainWorld(
               ipcRenderer.on(channel, (event, ...args) => func(...args));
           }
       }
+  },
+  'leaflet',{
+    sendL: () => ipcRenderer.send(L)
   }
 );
+
+
 
 window.addEventListener('DOMContentLoaded', () => {
   const replaceText = (selector, text) => {

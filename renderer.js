@@ -6,7 +6,12 @@
 // process.
 
 //Path for the image of the floor
-const image;
+const {ipcRenderer} = require('electron');
+const L = require('leaflet');
+
+var imagepath = "";
+var sfloor = "";
+
 
 //Form References
 const getNameForm = document.getElementById('ipcNameForm');
@@ -37,10 +42,11 @@ getNameForm.addEventListener('submit', function (event){
 //Add Floor to Global JSON
 floorBtn.addEventListener('click', function (event){
     event.preventDefault() // stop the form from submitting
-    let sfloor = document.getElementById("floor").value;
+    sfloor = document.getElementById("floor").value;
     ipcRenderer.send('toMap', sfloor);
     floorSelect.style.display = "none";
     mapView.style.display = "block";
+    addMapPic();
 });
 
 //Functionality for Buttons
@@ -59,18 +65,20 @@ surveyBtn.addEventListener('click',()=>{
 
 //All Map functions:
 //Initalize Map
-var mymap = L.map('mapid', {crs: L.CRS.Simple, minZoom: 0, maxZoom: 4});
+var mymap = L.map('MapContainer', {crs: L.CRS.Simple, minZoom: 0, maxZoom: 4});
 var furnitureLayer = L.layerGroup().addTo(mymap);
 var areaLayer = L.layerGroup().addTo(mymap);
 var drawnItems = new L.FeatureGroup();
 var bounds = [[0,0], [360,550]];
 mymap.fitBounds(bounds);
 
+//map image
+var image;
+
 var furnMap = new Map();
 var activityMap = new Map();
 var wb_activityMap = new Map();
 var areaMap = new Map();
-
 
 //Max Interactible Boundaries
 var latMax = 359.75;
@@ -82,29 +90,60 @@ var longMin = 42.18;
 var furnMap = new Map();
 var mapKey = 0;
 
+
 //create a container for areas
 var areaMap = new Map();
 
 //Add Image of Map
 function addMapPic(){
-    //remove old floor image and place newly selected floor image
-    if( mymap.hasLayer(image)){
-        mymap.removeLayer(image);
+    //remove old floor imagepath and place newly selected floor imagepath
+    if( mymap.hasLayer(imagepath)){
+        mymap.removeLayer(imagepath);
     }
 
-    //Get Floor ID here
-    floor_id_selection = form_info.value;
+    switch(sfloor){
+        case '0':
+            imagepath = "";
+        case '1':
+            imagepath = "./images/floor1.svg";
+        case '2':
+            imagepath = "./images/floor2.svg";
+        case '3':
+            imagepath = "./images/floor3.svg";
+    }
+
+    if(sfloor != '' && imagepath != ''){
+        console.log(imagepath);
+        image = L.imageOverlay(imagepath, bounds);
+        image.addTo(mymap);
+    }
+    else{
+        console.log("Image Failed to Load");
+    }
 
 }
 
-function Furniture(id,ftype, latlng, fname, roomName, roomId){
-    this.id = id;
-    this.fname = fname;
+//Furniture Obj
+function Furniture(fid, num_seats){
+    this.furn_id = fid;
+    this.num_seats = num_seats;
+    this.seat_places = [];
+    this.seat_type = 32;
+    this.whiteboard = [];
+    this.totalOccupants = 0;
     this.marker;
+    this.modified = false;
     this.degreeOffset = 0;
-    this.x = latlng.lng;
-    this.y = latlng.lat;
-    this.ftype = ftype;
-    this.roomName = roomName;
-    this.roomId = roomId;
+    this.x;
+    this.y;
+    this.ftype;
+}
+
+
+//Seat Obj
+function Seat(seatPos){
+    this.seatPos = seatPos;
+    //this.type = type;
+    this.activity = [];
+    this.occupied = false;
 }
