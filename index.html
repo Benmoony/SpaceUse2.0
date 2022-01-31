@@ -5,8 +5,10 @@
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
     <link href="./styles.css" rel="stylesheet">
-    <link href="./format.css" rel="stylesheet">
-    <link href="./layout.css" rel="stylesheet">
+    <link href="./leaflet/leaflet.css" rel="stylesheet">
+    <script href="./leaflet/leaflet.js"></script>
+    <script href="./mapscripts/mapbuilder.js"></script>
+    <script>window.$ = window.jQuery = require('jquery');</script>
     <title>Hello World!</title>
   </head>
   <body>
@@ -19,9 +21,9 @@
         <legend>Please Enter Surveyor's Name</legend>
         <label for="fname">First Name: </label>
         <input type="text" id="fname" required="required">
-        <label for="lname">Password: </label>
+        <label for="lname">Last Name: </label>
         <input type="text" id="lname" required="required">
-        <input type="submit" id="submitname" value="submit">
+        <input type="submit" id="submitName" value="Submit">
       </fieldset>
     </form>
 
@@ -30,12 +32,29 @@
     <!-- This menu will include all of the possible options for the survey-->
     <div id="home">
       <button id="backBtn">Quit</button>
+      <button id="surveyBtn">Survey</button>
+      <button id="loadSurveyBtn">Load Survey (TBD)</button>
+    </div>
 
+    <!-- Floor Selector-->
+    <!-- This will enable the surveyor to select the floor-->
+    <div id="floorSelect">
+        <select name="floors" id="floor">
+          <option value="0">Basement</option>
+          <option value="1">Floor 1</option>
+          <option value="2">Floor 2</option>
+          <option value="3">Floor 3</option>
+        </select>
+        <button id="submitFloor" value="Submit">Choose Floor</button>
     </div>
 
     <!-- Survey Interface Load In Here-->
     <!-- This View will include all UI elements of the Survey Map-->
 
+    <div id="mapView">
+      <p>Map Goes Here</p>
+      <div id="MapContainer"></div>
+    </div>
     <!-- Pop Up HTML-->
     <!-- This Section will include the pop up interface that will occur on touch screen-->
 

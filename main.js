@@ -54,17 +54,29 @@ app.on('window-all-closed', function () {
 ipcMain.on('toMain', function(event, sname){
 
   //Store the Surveyor's name in the global Array
-  Surveyor = {'Surveyor': sname};
+  let Surveyor = {'Surveyor': sname};
   global.shared.surveyArray.push(Surveyor);
   console.log(global.shared.surveyArray);
   //Navigate to the homepage
   console.log("Displaying Home " + sname);
 });
 
+ipcMain.on('toMap', function(event, sfloor){
+
+  //Store the Surveyor's name in the global Array
+  let Floor = {'Floor': sfloor};
+  global.shared.surveyArray.push(Floor);
+  console.log(global.shared.surveyArray);
+  //Navigate to the homepage
+  console.log("Floor Select: " + sfloor);
+});
+
 ipcMain.on('back-to-previous',()=>{
   global.shared.surveyArray.length = 0;
   console.log("Memory Cleared, type name again");
 });
+
+
 
 
 

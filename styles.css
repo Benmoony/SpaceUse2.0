@@ -5,3 +5,11 @@
 #home{
     display: none;
 }
+
+#floorSelect{
+    display: none;
+}
+
+#mapView{
+    display:none;
+}
