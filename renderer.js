@@ -96,6 +96,30 @@ var mapKey = 0;
 //create a container for areas
 var areaMap = new Map();
 
+//Furniture Obj
+function Furniture(fid, num_seats){
+    this.furn_id = fid;
+    this.num_seats = num_seats;
+    this.seat_places = [];
+    this.seat_type = 32;
+    this.whiteboard = [];
+    this.total_occupants = 0;
+    this.marker;
+    this.modified = false;
+    this.degree_offset = 0;
+    this.x;
+    this.y;
+    this.ftype;
+}
+
+//Seat Obj
+function Seat(seatPos){
+    this.seatPos = seatPos;
+    //this.type = type;
+    this.activity = [];
+    this.occupied = false;
+}
+
 //Add Image of Map to div
 function addMapPic(){
     //remove old floor imagepath and place newly selected floor imagepath
@@ -129,6 +153,14 @@ function addMapPic(){
         //Prebuild Layout in CSV File to JSON
         //TODO: implement Layout
 
+        //Test furniture piece
+        let test_furn_array = [];
+        let test_furn_1 = Furniture(1, 2);
+        test_furn_1.x = 50;
+        test_furn_1.y = 50;
+        test_furn_1.ftype = 33;
+        test_furn_array.push(test_furn_1);
+
 
     }
     else{
@@ -137,30 +169,7 @@ function addMapPic(){
 
 }
 
-//Furniture Obj
-function Furniture(fid, num_seats){
-    this.furn_id = fid;
-    this.num_seats = num_seats;
-    this.seat_places = [];
-    this.seat_type = 32;
-    this.whiteboard = [];
-    this.total_occupants = 0;
-    this.marker;
-    this.modified = false;
-    this.degree_offset = 0;
-    this.x;
-    this.y;
-    this.ftype;
-}
 
-
-//Seat Obj
-function Seat(seatPos){
-    this.seatPos = seatPos;
-    //this.type = type;
-    this.activity = [];
-    this.occupied = false;
-}
 
 
 
@@ -173,6 +182,7 @@ function build_makers(furnitureArray){
         //prebuild furniture array in the form of furniture objects to add to the map
 
         var key = furnitureArray[i];
+        console.log(key);
         var furn_id = key.furn_id;
 
         var num_seats = parseInt(key.num_seats);
@@ -181,7 +191,7 @@ function build_makers(furnitureArray){
         var x = key.x;
         var y = key.y;
         var degree_offset = key.degree_offset;
-        var furniture_type = key.furniture_type;
+        var furniture_type = key.ftype;
         var seat_type = key.seat_type;
 
         var latlng = [y,x];
@@ -196,9 +206,9 @@ function build_makers(furnitureArray){
         
         //place a marker for each furniture item
         marker = L.marker(latlng, {
-            icon: selectedIcon,
+            icon: sicon,
             rotationAngle: degree_offset,
-                        rotationOrigin: "center",
+            rotationOrigin: "center",
             draggable: false,
             ftype: furniture_type,
             numSeats: num_seats,
@@ -210,7 +220,7 @@ function build_makers(furnitureArray){
         marker.setOpacity(.3);
 
         //update marker coords when a user stops dragging the marker, set to furniture object to indicate modified
-        marker.on("dragend", function(e){
+        /*marker.on("dragend", function(e){
             selected_furn.modified = true;
             latlng =  e.target.getLatLng();
 
@@ -229,10 +239,10 @@ function build_makers(furnitureArray){
             if(area_id !== "TBD"){
                 selected_furn.in_area = area_id;
             }
-        });
+        });*/
 
         //add furniture to the datamap to capture input information from data
-        furnMap.set(furn_id.toString(), newFurniture);
+        furnMap.set(furn_id.toString(), newFurn);
 
     }
 
