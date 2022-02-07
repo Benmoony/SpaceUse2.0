@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, Tray, BrowserWindow, Menu, dialog, ipcMain} = require('electron')
+const { app, Tray, BrowserWindow, Menu, dialog, ipcMain, globalShortcut} = require('electron')
 const path = require('path');
 const url = require('url');
 const fs = require('fs');
@@ -60,6 +60,16 @@ ipcMain.on('toMain', function(event, sname){
   //Store the Surveyor's name in the global Array
   let Surveyor = {'Surveyor': sname};
   global.shared.surveyArray.push(Surveyor);
+  let b = {'Basement': []};
+  let f1 = {'Floor One': []};
+  let f2 = {'Floor Two': []};
+  let f3 = {'Floor Three': []};
+  global.shared.surveyArray.push(b);
+  global.shared.surveyArray.push(f1);
+  global.shared.surveyArray.push(f2);
+  global.shared.surveyArray.push(f3);
+  
+  
   console.log(global.shared.surveyArray);
   //Navigate to the homepage
   console.log("Displaying Home " + sname);
@@ -69,6 +79,10 @@ ipcMain.on('toMap', function(event, sfloor){
 
   //Store the Surveyor's name in the global Array
   let Floor = {'Floor': sfloor};
+
+  //TODO: Prevent Duplicate Floors from being pushed to the global array
+
+
   global.shared.surveyArray.push(Floor);
   console.log(global.shared.surveyArray);
   //Navigate to the homepage

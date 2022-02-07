@@ -1,15 +1,66 @@
 /* styles.css */
 
+@import 
+
+@font-face {
+    font-family: "Source Serif 4";
+    src: url("https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;900&display=swap");
+}
 /* Add styles here to customize the appearance of your app */
+body{
+    background-color: beige;
+    margin: 0;
+    font-family: 'Source Serif 4', sans-serif;
+}
+
 
 #home{
     display: none;
+    padding: 1em;
+    background-color: cadetblue;
+    height:fit-content;
+    color: cornsilk;
 }
 
 #floorSelect{
     display: none;
+    padding: 1em;
+    background-color: cadetblue;
+    height:fit-content;
+    color: cornsilk;
 }
 
 #mapView{
     display:none;
+    background-color: cornsilk;
+    z-index: -999;
+}
+
+.navContainer{
+    margin: 0;
+    padding: .5em;
+    display: block;
+    width: 100%;
+    align-items: center;
+    height: 8em;
+    background-color: lightseagreen;
+}
+
+.logo{
+    width:50%;
+}
+
+.hsu-humboldt{
+    fill: #FFF;
+}
+
+.hsu-calpoly{
+    fill: #F6F19B;
+}
+
+.login{
+    padding: 1em;
+    background-color: cadetblue;
+    height:fit-content;
+    color: cornsilk;
 }
