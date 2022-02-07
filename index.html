@@ -5,10 +5,11 @@
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
     <link href="./styles.css" rel="stylesheet">
-    <script href="mapscripts/map_helpers.js"></script>
-    <script href="mapscripts/makerinPoly.js"></script>
+    <script src="mapscripts/map_helpers.js"></script>
+    <script src="mapscripts/makerinPoly.js"></script>
     <script>
       window.$ = window.jQuery = require('jquery');
+      var L = require('leaflet');
     </script>
     <title>Hello World!</title>
   </head>
