@@ -1,4 +1,6 @@
 /*Basic Helper Functions for interacting with Maps*/
+var L = require('leaflet');
+
 function getFurnMap(){
     return furnMap;
 }
