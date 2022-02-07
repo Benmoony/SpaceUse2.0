@@ -7,7 +7,7 @@
 
 //Path for the image of the floor
 const {ipcRenderer} = require('electron');
-const L = require('leaflet');
+var L = require('leaflet');
 
 var imagepath = "";
 var sfloor = "";
@@ -43,10 +43,11 @@ getNameForm.addEventListener('submit', function (event){
 floorBtn.addEventListener('click', function (event){
     event.preventDefault() // stop the form from submitting
     sfloor = document.getElementById("floor").value;
-    ipcRenderer.send('toMap', sfloor);
-    floorSelect.style.display = "none";
+    
     mapView.style.display = "block";
     addMapPic();
+    //Add Furniture After Adding Items
+
 });
 
 //Functionality for Buttons
@@ -54,6 +55,7 @@ backBtn.addEventListener('click',()=>{
     ipcRenderer.send('back-to-previous');
     home.style.display = "none";
     mapView.style.display = "none";
+    floorSelect.style.display = "none";
     getNameForm.style.display = "block";
 });
 
@@ -94,28 +96,40 @@ var mapKey = 0;
 //create a container for areas
 var areaMap = new Map();
 
-//Add Image of Map
+//Add Image of Map to div
 function addMapPic(){
     //remove old floor imagepath and place newly selected floor imagepath
-    if( mymap.hasLayer(imagepath)){
-        mymap.removeLayer(imagepath);
+    if( mymap.hasLayer(image)){
+        mymap.removeLayer(image);
     }
 
+    sfloor = parseInt(sfloor);
+
     switch(sfloor){
-        case '0':
+        case 0:
             imagepath = "";
-        case '1':
+            break;
+        case 1:
             imagepath = "./images/floor1.svg";
-        case '2':
+            break;
+        case 2:
             imagepath = "./images/floor2.svg";
-        case '3':
+            break;
+        case 3:
             imagepath = "./images/floor3.svg";
+            break;
     }
 
     if(sfloor != '' && imagepath != ''){
         console.log(imagepath);
         image = L.imageOverlay(imagepath, bounds);
         image.addTo(mymap);
+
+        //load furniture after image depending on selected layout.
+        //Prebuild Layout in CSV File to JSON
+        //TODO: implement Layout
+
+
     }
     else{
         console.log("Image Failed to Load");
@@ -130,10 +144,10 @@ function Furniture(fid, num_seats){
     this.seat_places = [];
     this.seat_type = 32;
     this.whiteboard = [];
-    this.totalOccupants = 0;
+    this.total_occupants = 0;
     this.marker;
     this.modified = false;
-    this.degreeOffset = 0;
+    this.degree_offset = 0;
     this.x;
     this.y;
     this.ftype;
@@ -147,3 +161,80 @@ function Seat(seatPos){
     this.activity = [];
     this.occupied = false;
 }
+
+
+
+//pass information from the layout to build the markers after loading layout file
+function build_makers(furnitureArray){
+
+    //define array of furniture to build markers from based on passed layout ID
+    for(var i in furnitureArray){
+
+        //prebuild furniture array in the form of furniture objects to add to the map
+
+        var key = furnitureArray[i];
+        var furn_id = key.furn_id;
+
+        var num_seats = parseInt(key.num_seats);
+        var newFurn = new Furniture(furn_id, num_seats);
+
+        var x = key.x;
+        var y = key.y;
+        var degree_offset = key.degree_offset;
+        var furniture_type = key.furniture_type;
+        var seat_type = key.seat_type;
+
+        var latlng = [y,x];
+
+        newFurn.degree_offset = degree_offset;
+        area_id = "TBD";
+
+        //parse furniture type to an int, then get the correct icon
+        var type =  parseInt(furniture_type);
+        var sicon = getIconObj(type);
+
+        
+        //place a marker for each furniture item
+        marker = L.marker(latlng, {
+            icon: selectedIcon,
+            rotationAngle: degree_offset,
+                        rotationOrigin: "center",
+            draggable: false,
+            ftype: furniture_type,
+            numSeats: num_seats,
+            fid: furn_id.toString()
+        }).addTo(furnitureLayer).bindPopup(popup, popupDim);
+
+        //make marker clickable
+        marker.on('click', markerClick);
+        marker.setOpacity(.3);
+
+        //update marker coords when a user stops dragging the marker, set to furniture object to indicate modified
+        marker.on("dragend", function(e){
+            selected_furn.modified = true;
+            latlng =  e.target.getLatLng();
+
+            selected_furn.latlng = latlng;
+            y = latlng.lat;
+            x = latlng.lng;
+            area_id="TBD";
+            selected_furn.y = y;
+            selected_furn.x = x;
+            areaMap.forEach(function(jtem, key, mapObj){
+                
+                if(isMarkerInsidePolygon(y,x, jtem.polyArea)){
+                    area_id = jtem.area_id;
+                }
+            });
+            if(area_id !== "TBD"){
+                selected_furn.in_area = area_id;
+            }
+        });
+
+        //add furniture to the datamap to capture input information from data
+        furnMap.set(furn_id.toString(), newFurniture);
+
+    }
+
+}
+
