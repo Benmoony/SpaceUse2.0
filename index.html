@@ -4,13 +4,10 @@
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
+    
+    <link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.css" />
     <link href="./styles.css" rel="stylesheet">
-    <script src="mapscripts/map_helpers.js"></script>
-    <script src="mapscripts/makerinPoly.js"></script>
-    <script>
-      window.$ = window.jQuery = require('jquery');
-      var L = require('leaflet');
-    </script>
+    <script src="./node_modules/jquery" onload="window.$ = window.jQuery = module.exports;"></script>
     <title>Hello World!</title>
   </head>
   <body>
@@ -59,7 +56,7 @@
     <!-- This View will include all UI elements of the Survey Map-->
 
     <div id="mapView">
-      <p>Map Goes Here</p>
+
       <div id="MapContainer"></div>
     </div>
     <!-- Pop Up HTML-->
@@ -78,5 +75,8 @@
     <!-- You can also require other files to run in this process -->
     <!-- Require Javascript files here to be run alongside render process for processing data being added to global survey object-->
     <script src="./renderer.js"></script>
+    <script src="mapscripts/map_builder.js"></script>
+    <script src="mapscripts/map_helpers.js"></script>
+    <script src="mapscripts/makerinPoly.js"></script>
   </body>
 </html>
