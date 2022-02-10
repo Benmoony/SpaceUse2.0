@@ -1,6 +1,5 @@
 /*Basic Helper Functions for interacting with Maps*/
 var L = require('leaflet');
-
 function getFurnMap(){
     return furnMap;
 }
@@ -35,11 +34,11 @@ var marker = L.Marker.extend({
 //extend Icon for each different furniture icon
 var CircTableIcon = L.Icon.extend({
     options: {
-				className: 'furnitureLargeIcon',
-				iconUrl: './images/icons/circ_table.svg',
-				iconSize: [10, 10],
-				iconAnchor: [5,5],
-				popupAnchor: [5,5]
+		className: 'furnitureLargeIcon',
+		iconUrl: './images/icons/circ_table.svg',
+		iconSize: [10, 10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
     }
 });
 
@@ -359,6 +358,10 @@ var VidViewerFilledIcon = L.Icon.extend({
 
 var vidViewerFilled = new VidViewerFilledIcon();
 
+//return the icon type based on furniture typefunction
+//takes an int
+//returns Icon object
+
 function getIconObj(furniture_type) {
 
 	switch(furniture_type){
@@ -398,3 +401,6 @@ function getIconObj(furniture_type) {
 	}
 	return selectedIcon;
 }
+
+
+/*export{getIconObj, getFurnMap, getActivityMap};*/
