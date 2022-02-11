@@ -12,6 +12,8 @@ function getWhiteboardActivityMap(){
     return wb_activityMap;
 }
 
+
+
 //This file extends Marker to contain furniture information
 //and extend Icon class to create new icons for each piece of furniture
 //contains function to return selected icon type based on furniture type
@@ -331,6 +333,8 @@ var StudyTwoIcon = L.Icon.extend({
 		popupAnchor: [5,5]
 	}
 });
+
+
 
 var studyTwo = new StudyTwoIcon();
 
