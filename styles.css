@@ -7,6 +7,8 @@
 body{
     background-color: beige;
     margin: 0;
+    height: 100vh;
+    width: 100vw;
     font-family: 'Source Serif 4', sans-serif;
 }
 
@@ -31,12 +33,12 @@ body{
     display:none;
     background-color: cornsilk;
     z-index: -999;
-    height: 500px;
+    height: 100%;
     
 }
 
 #MapContainer{
-    height: 500px
+    height: 100%;
 }
 
 

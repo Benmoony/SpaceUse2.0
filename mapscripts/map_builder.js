@@ -227,8 +227,9 @@ function addMapPic(){
         }
         var newzoom = '' + (markerSize) +'px';
         var newLargeZoom = '' + (markerSize*2) +'px';
-        $('#MapContainer.furnitureIcon').css({'width':newzoom,'height':newzoom});
-        $('#MapContainer.furnitureLargeIcon').css({'width':newLargeZoom,'height':newLargeZoom});
+
+        $('.furnitureIcon').css({'width':newzoom,'height':newzoom});
+        $('.furnitureLargeIcon').css({'width':newLargeZoom,'height':newLargeZoom});
     });
 
 }
