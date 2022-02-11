@@ -8,8 +8,6 @@
 //Path for the image of the floor
 const {ipcRenderer} = require('electron');
 
-
-
 //Form References
 const getNameForm = document.getElementById('ipcNameForm');
 

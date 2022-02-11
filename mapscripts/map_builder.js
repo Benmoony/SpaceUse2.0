@@ -5,6 +5,12 @@ window.$ = window.jQuery = require('jquery');
 var imagepath = "";
 var sfloor = "";
 var selected_furn;
+var selected_marker;
+var seat_num;
+var floor_path;
+
+//to store the seat_places array to be saved
+var temp_seat_places = [];
 
 const floorBtn = document.getElementById('submitFloor');
 
@@ -19,6 +25,8 @@ floorBtn.addEventListener('click', function (event){
 
 });
 
+
+//Initalize Map
 var mymap = L.map('MapContainer', {crs: L.CRS.Simple, minZoom: 0, maxZoom: 4});
 var furnitureLayer = new L.layerGroup().addTo(mymap);
 var areaLayer = L.layerGroup().addTo(mymap);
@@ -33,6 +41,14 @@ var activityMap = new Map();
 var wb_activityMap = new Map();
 var areaMap = new Map();
 
+//Define Activities
+activityMap.set(0, "Studying");
+activityMap.set(1, "Computer");
+activityMap.set(2, "Entertainment");
+
+wb_activityMap.set(0, "Partition");
+wb_activityMap.set(1, "Writing");
+
 //Max Interactible Boundaries
 var latMax = 359.75;
 var latMin = -0.5;
@@ -42,6 +58,12 @@ var longMin = 42.18;
 //container for furniture objects
 var furnMap = new Map();
 var mapKey = 0;
+
+var popupDim =
+{
+    'maxWidth': '5000',
+    'maxHeight': '5000'
+};
 
 //extend the marker class to add furniture data
 var marker = L.Marker.extend({
@@ -119,6 +141,9 @@ function build_markers(furnitureArray){
         var sicon = getIconObj(type);
         console.log(sicon);
 
+        //initalize pointer to popup div
+        var popup = document.getElementById("popup");
+
 
         //place a marker for each furniture item
         marker = L.marker(latlng, {
@@ -129,7 +154,7 @@ function build_markers(furnitureArray){
             ftype: furniture_type,
             numSeats: num_seats,
             fid: furn_id.toString()
-        }).addTo(furnitureLayer).bindPopup('Marker at ' + latlng).openPopup();
+        }).addTo(furnitureLayer).bindPopup(popup, popupDim);
 
         console.log(furnitureLayer);
         //TODO: Implement Popup
@@ -209,6 +234,8 @@ function addMapPic(){
         test_furn_array.push(test_furn_1);
         build_markers(test_furn_array);
 
+        //TODO: Implement read file of furniture layout
+
     }
     else{
         console.log("Image Failed to Load");
@@ -232,50 +259,4 @@ function addMapPic(){
         $('.furnitureLargeIcon').css({'width':newLargeZoom,'height':newLargeZoom});
     });
 
-}
-
-//TODO: implement MarkerClick
-
-function markerClick(e){
-
-    /*
-    //when a marker is clicked, it should be rotatable, and delete able
-    selected_marker = this;
-    selected_furn = furnMap.get(selected_marker.options.fid);
-    //make sure the nameDiv is created and attached to popup
-    if(document.getElementById("nameDiv") == null){
-        var nameDiv = document.createElement("div");
-        nameDiv.id = "nameDiv";
-        document.getElementById("popup").appendChild(nameDiv);
-    }
-    //set the nameDiv to the name of the current furniture
-    var nameDiv = document.getElementById("nameDiv");
-    nameDiv.innerHTML = "<strong>Type: </strong>"+selected_furn.fname+"</br></br>";
-
-    if(document.getElementById("deleteButtonDiv") == null) {
-        //create a div to hold delete marker button
-        var deleteButtonDiv = document.createElement("div");
-        deleteButtonDiv.id = "deleteButtonDiv";
-        //attach deleteButton div to popup
-        document.getElementById("popup").appendChild(deleteButtonDiv);
-        //create delete button
-        var deleteMarkerButton = document.createElement("BUTTON");
-        deleteMarkerButton.id = "deleteMarkerButton";
-        deleteMarkerButton.innerHTML = "Delete";
-        deleteMarkerButton.onclick = deleteHelper;
-        //deleteMarkerButton.className = "deleteButton";
-        //add the button to the div
-        document.getElementById("deleteButtonDiv").appendChild(deleteMarkerButton);
-    }
-
-    //check if the rotateDiv has been made
-    if(document.getElementById("rotateDiv") == null){
-        //create a div to hold rotateButton
-        var rotateDiv = document.createElement("div");
-        rotateDiv.id = "rotateDiv";
-        //attach the rotatebutton div to the popup
-        document.getElementById("popup").appendChild(rotateDiv);
-        rotateHelper("rotateDiv");
-    }
-    */
 }
