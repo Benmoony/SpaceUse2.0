@@ -1,0 +1,7 @@
+Surveyor,Floor One.1.furn_id,Floor One.1.num_seats,Floor One.1.seat_places,Floor One.1.seat_type,Floor One.1.whiteboard,Floor One.1.total_occupants,Floor One.1.modified,Floor One.1.degree_offset,Floor One.1.x,Floor One.1.y,Floor One.1.ftype,Floor Two,Floor Three,Time Start,Time End
+Test Test,null,null,null,null,null,null,null,null,null,null,null,undefined,undefined,undefined,undefined
+undefined,1,2,"[{""seatPos"":0,""activity"":[],""occupied"":true},{""seatPos"":1,""activity"":[],""occupied"":false}]",32,[],0,false,0,338,122,10,undefined,undefined,undefined,undefined
+undefined,null,null,null,null,null,null,null,null,null,null,null,[],undefined,undefined,undefined
+undefined,null,null,null,null,null,null,null,null,null,null,null,undefined,[],undefined,undefined
+undefined,null,null,null,null,null,null,null,null,null,null,null,undefined,undefined,Fri Feb 18 2022 14:47:39 GMT-0800 (Pacific Standard Time),undefined
+undefined,null,null,null,null,null,null,null,null,null,null,null,undefined,undefined,undefined,Fri Feb 18 2022 14:47:49 GMT-0800 (Pacific Standard Time)

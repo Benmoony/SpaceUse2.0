@@ -109,21 +109,50 @@ ipcMain.on('SaveFurniture', function(event, furnMap, sfloor){
 });
 
 ipcMain.on('SaveSurvey',()=>{
-  let FinalArray = JSON.stringify(global.shared.surveyArray);
   let date = new Date();
   let TimeEnd = {'Time End': date};
   global.shared.surveyArray.push(TimeEnd);
+  console.log(global.shared.surveyArray);
+  
 
-  converter.json2csv(FinalArray, (err, csv) => {
+  converter.json2csv(global.shared.surveyArray, (err, csv) => {
     if (err) {
         throw err;
     }
     console.log(csv);
-    fs.writeFile('testfile.csv', csv, function(err){
-      if(err) throw err;
+
+    //TODO: IMPLEMENT DIALOG OPTION FOR SAVE EVENT LISTENER
+    dialog.showSaveDialog({
+      title: 'Select the File Path to save',
+      defaultPath: path.join(__dirname, './SavedSurveys/testfile.csv'),
+      buttonLabel: 'Save',
+      filters: [
+        {
+          name: 'Tex Files',
+          extensions: ['txt', 'docx', 'csv']
+        }
+      ],
+      properties: []
+    }).then(file => {
+      if (!file.canceled) {
+        console.log(file.filePath.toString());
+          
+        // Creating and Writing to the sample.txt file
+        fs.writeFile(file.filePath.toString(), 
+                  csv, function (err) {
+            if (err) throw err;
+            console.log('Saved!');
+              });
+          }
+      }).catch(err => {
+          console.log(err)
+      });
     });
 
-  });
+    /*fs.writeFile('testfile.csv', csv, function(err){
+      if(err) throw err;
+    });*/
+
 });
 
 
