@@ -9,6 +9,14 @@ var selected_marker;
 var seat_num;
 var floor_path;
 
+//Buttons from DOM to apply helpers too
+var SaveBtn = document.getElementById('save');
+var LockBtn = document.getElementById('lock');
+var RotateBtn = document.getElementById('rotate');
+var CheckAllBtn = document.getElementById('checkall');
+var MinusBtn = document.getElementById('minus');
+var PlusBtn = document.getElementById('plus');
+
 //to store the seat_places array to be saved
 var temp_seat_places = [];
 
@@ -18,13 +26,15 @@ const floorBtn = document.getElementById('submitFloor');
 floorBtn.addEventListener('click', function (event){
     event.preventDefault() // stop the form from submitting
     sfloor = document.getElementById("floor").value;
-    
     mapView.style.display = "block";
     addMapPic();
     //Add Furniture After Adding Items
-
 });
 
+function reinializePop(){
+	let obj = document.getElementById('MapContainer');
+    obj.insertAdjacentHTML('afterend', '<div id="popup"><div id="seat_div"></div><div id="wb_div"></div><button id="save" style="display:none">Save and Exit</button><button id="lock">Unlock</button><button id="checkall" style="display:none">Check All</button><label id="seat_operator"></label><button id="minus" style="display:none">-</button><button id="plus" style="display:none">+</button></div>');
+}
 
 //Initalize Map
 var mymap = L.map('MapContainer', {crs: L.CRS.Simple, minZoom: 0, maxZoom: 4});
@@ -137,7 +147,6 @@ function build_markers(furnitureArray){
         //parse furniture type to an int, then get the correct icon
         var type =  parseInt(furniture_type);
 
-        //TODO: Retool get Icon, to return the URL and the class name, build the Icon to add to the marker here
         var sicon = getIconObj(type);
         console.log(sicon);
 
@@ -157,14 +166,13 @@ function build_markers(furnitureArray){
         }).addTo(furnitureLayer).bindPopup(popup, popupDim);
 
         console.log(furnitureLayer);
-        //TODO: Implement Popup
         
 
         //make marker clickable
         marker.on('click', markerClick);
 
         //update marker coords when a user stops dragging the marker, set to furniture object to indicate modified
-        /*marker.on("dragend", function(e){
+        marker.on("dragend", function(e){
             selected_furn.modified = true;
             latlng =  e.target.getLatLng();
 
@@ -174,16 +182,17 @@ function build_markers(furnitureArray){
             area_id="TBD";
             selected_furn.y = y;
             selected_furn.x = x;
-            areaMap.forEach(function(jtem, key, mapObj){
+            /*areaMap.forEach(function(jtem, key, mapObj){
                 
                 if(isMarkerInsidePolygon(y,x, jtem.polyArea)){
                     area_id = jtem.area_id;
                 }
-            });
+            });*/
             if(area_id !== "TBD"){
                 selected_furn.in_area = area_id;
             }
-        });*/
+            console.log(selected_furn);
+        });
 
         //add furniture to the datamap to capture input information from data
         furnMap.set(furn_id.toString(), key);
@@ -197,6 +206,24 @@ function addMapPic(){
     //remove old floor imagepath and place newly selected floor imagepath
     if( mymap.hasLayer(image)){
         mymap.removeLayer(image);
+    }
+
+    //reinalize furniture layer
+    if(mymap.hasLayer(furnitureLayer)){
+        mymap.removeLayer(furnitureLayer);
+        furnitureLayer = new L.layerGroup().addTo(mymap);
+
+        if(document.getElementById("popup") === null){
+            reinializePop();
+            SaveBtn = document.getElementById('save');
+            LockBtn = document.getElementById('lock');
+            RotateBtn = document.getElementById('rotate');
+            CheckAllBtn = document.getElementById('checkall');
+            MinusBtn = document.getElementById('minus');
+            PlusBtn = document.getElementById('plus');
+        }
+        
+      
     }
 
     sfloor = parseInt(sfloor);

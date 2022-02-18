@@ -51,6 +51,8 @@
           <option value="3">Floor 3</option>
         </select>
         <button id="submitFloor" value="Submit">Choose Floor</button>
+        <button id="saveFloor">Save Floor</button>
+        <button id="saveSurvey"> Submit Survery</button>
     </div>
 
     <!-- Survey Interface Load In Here-->
@@ -58,20 +60,21 @@
 
     <div id="mapView">
       <div id="MapContainer"></div>
-      <div id="popup">
-        <div id="seat_div"></div>
-        <div id="wb_div"></div>
-        <button id="save" style="display:none">Save and Exit</button>
-        <button id="lock">Unlock</button>
-        <button onClick="rotateHelper('seat_div_child')" id="rotate">Rotate</button>
-        <button id="checkall" style="display:none">Check All</button>
-        <label id="seat_operator"></label>
-        <button id="minus" style="display:none">-</button>
-        <button id="plus" style="display:none">+</button>
-    </div>
-    </div>
-    <!-- Pop Up HTML-->
+      <!-- Pop Up HTML-->
     <!-- This Section will include the pop up interface that will occur on touch screen-->
+        <div id="popup">
+          <div id="seat_div"></div>
+          <div id="wb_div"></div>
+          <button id="save" style="display:none">Save and Exit</button>
+          <button id="lock">Unlock</button>
+          <!-- <button onClick="rotateHelper('seat_div_child')" id="rotate">Rotate</button> -->
+          <button id="checkall" style="display:none">Check All</button>
+          <label id="seat_operator"></label>
+          <button id="minus" style="display:none">-</button>
+          <button id="plus" style="display:none">+</button>
+      </div>
+    </div>
+    
 
     <!-- Process CSV and Download-->
     <!-- UI elements for CSV file conversion processing and download-->

@@ -8,7 +8,7 @@ function markerClick(e){
 	wb_activityMap = getWhiteboardActivityMap();
 	document.getElementById("lock").style.display = "inline";
 	document.getElementById("lock").innerText = "Unlock";
-	document.getElementById("rotate").style.display = "block";
+	//document.getElementById("rotate").style.display = "block";
 	document.getElementById("plus").style.display = "block";
 	document.getElementById("minus").style.display = "block";
 	document.getElementById("checkall").style.display = "block";
@@ -16,9 +16,6 @@ function markerClick(e){
 	document.getElementById("save").style.top = "40.5%";
 	
 	selected_furn = furnMap.get(this.options.fid);
-
-    //Temp
-    console.log('selected furniture is: ' + selected_furn);
 	selected_marker = this;
 	selected_marker.dragging.disable();
 	
@@ -214,7 +211,7 @@ function addRoomInput(currentOccupants){
 	document.getElementById("checkbox1").style.display = "none";
 	document.getElementById("checkall").style.display = "none";
 	document.getElementById("lock").style.display = "none";
-	document.getElementById("rotate").style.display = "none";
+	//document.getElementById("rotate").style.display = "none";
 	document.getElementById("plus").style.display = "none";
 	document.getElementById("minus").style.display = "none";
 	document.getElementById("save").style.top = "33%";

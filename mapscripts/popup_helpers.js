@@ -1,13 +1,5 @@
 //Various Helper functions that assist in data collection popup user interface
 
-//TODO: Get Buttons from DOM to apply helpers too
-var SaveBtn = document.getElementById('save');
-var LockBtn = document.getElementById('lock');
-var RotateBtn = document.getElementById('rotate');
-var CheckAllBtn = document.getElementById('checkall');
-var MinusBtn = document.getElementById('minus');
-var PlusBtn = document.getElementById('plus');
-
 //calls when minus button is clicked
 MinusBtn.addEventListener('click', ()=>{
     minus(selected_furn);
@@ -63,8 +55,10 @@ CheckAllBtn.addEventListener('click', ()=>{
 
 
 //This function helps rotate the furniture and appends the div after the furniture has been rotated.
-function rotateHelper(parentDiv)
-{
+/*RotateBtn.addEventListener('click', ()=>{
+	
+	var obj = $(this);
+
 	if(document.getElementById("rotateSlider") == null)
 	{
 		var rotateSlider = document.createElement("input");
@@ -80,8 +74,8 @@ function rotateHelper(parentDiv)
 		sliderValue.id = "sliderValue";
 		sliderValue.innerText = "Value: "+selected_furn.degreeOffset;
 		
-		document.getElementById(parentDiv).appendChild(sliderValue);
-		document.getElementById(parentDiv).appendChild(rotateSlider);
+		obj.parent().append(sliderValue);
+		obj.parent().append(rotateSlider);
 	
 			
 		rotateSlider.oninput = function()
@@ -99,40 +93,11 @@ function rotateHelper(parentDiv)
 		document.getElementById("rotateSlider").remove();
 		document.getElementById("sliderValue").remove();
 	}
-
-}
-
-
-//this helper will iterate over furnmap and provide update statements for all furnitures location.
-function updateHelper(){
-	var outString="";
-	
-	furnMap.forEach(function(item, key, mapObj){
-		aid = "TBD";
-		x = item.x;
-		y = item.y;
-		areaMap.forEach(function(jtem, jkey, mapObj){
-				
-			if(isMarkerInsidePolygon(y,x, jtem.polyArea)){
-				aid = jtem.area_id;
-			}
-		});
-		if(area_id !== "TBD"){
-			item.in_area = aid;
-		}
-        outString+= updateFurn(item);
-		outString+="\n";
-	});
-}
-
-//On click of submission, Create's a Survey Record and Inserts each seat object into the database with that ID
-function submitSurveyHelper(){
-    submitSurvey(username, layout, furnMap);
-}
+});*/
 
 //Deletes the selected marker
-function deleteHelper()
+/*function deleteHelper()
 {
 	mymap.removeLayer(selected_marker);
 	furnMap.delete(selected_furn.id);
-}
+}*/
