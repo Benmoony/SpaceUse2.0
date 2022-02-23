@@ -1,5 +1,8 @@
 //Various Helper functions that assist in data collection popup user interface
 
+//Change this to bind all listeners to the Map Container
+//check the event target and add initate the correct code on ID match
+
 //calls when minus button is clicked
 MinusBtn.addEventListener('click', ()=>{
     minus(selected_furn);

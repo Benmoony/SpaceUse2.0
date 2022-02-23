@@ -24,7 +24,7 @@ const saveSurvey = document.getElementById('saveSurvey');
 
 
 //TODO: USE EVENT BUBBLING on the MAP VIEW ID to ensure events are handled on Dynamically created objects
-
+//When click specific button in the div, use a certain function
 
 //Process Surveyors Name
 getNameForm.addEventListener('submit', function (event){
@@ -51,6 +51,8 @@ surveyBtn.addEventListener('click',()=>{
     floorSelect.style.display = "block";
 });
 
+//Disable Submit Survey Button by Default.
+//Enable Button after saving first floor to data
 saveFloor.addEventListener('click', ()=>{
     ipcRenderer.send('SaveFurniture', furnMap, sfloor);
     alert('Floor ' + sfloor + ' saved!');
@@ -58,14 +60,17 @@ saveFloor.addEventListener('click', ()=>{
 
 saveSurvey.addEventListener('click', ()=>{
     ipcRenderer.send('SaveSurvey');
-    ipcRenderer.send('back-to-previous');
+});
+
+ipcRenderer.on('SaveSuccess', ()=>{
+    alert('File Saved');
     home.style.display = "none";
     mapView.style.display = "none";
     saveFloor.style.display = "none";
     floorSelect.style.display = "none";
     getNameForm.style.display = "block";
 });
-
+    
 
 
 

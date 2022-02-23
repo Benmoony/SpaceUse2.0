@@ -1,0 +1,6 @@
+{"Surveyor":"Test TEst"},
+{"Floor One":{"1":{"furn_id":1,"num_seats":2,"seat_places":[{"seatPos":0,"activity":[],"occupied":true},{"seatPos":1,"activity":[],"occupied":true},{"seatPos":2,"activity":["Computer"],"occupied":true}],"seat_type":32,"whiteboard":[],"total_occupants":0,"modified":false,"degree_offset":0,"x":338,"y":122,"ftype":10}}},
+{"Floor Two":[]},
+{"Floor Three":[]},
+{"Time Start":"2022-02-23T00:58:36.992Z"},
+{"Time End":"2022-02-23T01:00:22.254Z"},

@@ -1,11 +1,11 @@
 // Modules to control application life and create native browser window
-const { app, Tray, BrowserWindow, Menu, dialog, ipcMain, globalShortcut} = require('electron')
-const converter = require('json-2-csv');
+const { app, Tray, BrowserWindow, Menu, dialog, ipcMain, globalShortcut} = require('electron');
 const path = require('path');
 const url = require('url');
 const fs = require('fs');
 const os = require('os');
 const global = require('./global.js');
+const { timeEnd } = require('console');
 
 
 //Global reference to the window object to prevent it being closed automatically when the JavaScript object is garbage collected
@@ -26,9 +26,11 @@ function createWindow () {
     }
   })
 
+  
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
 
+  win = mainWindow;
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
   mainWindow.on('close', (e) => {
@@ -112,49 +114,65 @@ ipcMain.on('SaveSurvey',()=>{
   let date = new Date();
   let TimeEnd = {'Time End': date};
   global.shared.surveyArray.push(TimeEnd);
-  console.log(global.shared.surveyArray);
-  
+  var toCSV = [];
+  for(i in global.shared.surveyArray){
+    var jsonObject = JSON.stringify(global.shared.surveyArray[i]);
+    toCSV.push(jsonObject);
+  }
 
-  converter.json2csv(global.shared.surveyArray, (err, csv) => {
-    if (err) {
-        throw err;
-    }
-    console.log(csv);
+  console.log(toCSV);
+
+  var csv = ConvertToCSV(toCSV);
+  console.log(csv);
+
 
     //TODO: IMPLEMENT DIALOG OPTION FOR SAVE EVENT LISTENER
-    dialog.showSaveDialog({
-      title: 'Select the File Path to save',
-      defaultPath: path.join(__dirname, './SavedSurveys/testfile.csv'),
-      buttonLabel: 'Save',
-      filters: [
-        {
-          name: 'Tex Files',
-          extensions: ['txt', 'docx', 'csv']
-        }
-      ],
-      properties: []
-    }).then(file => {
-      if (!file.canceled) {
-        console.log(file.filePath.toString());
-          
-        // Creating and Writing to the sample.txt file
-        fs.writeFile(file.filePath.toString(), 
-                  csv, function (err) {
-            if (err) throw err;
-            console.log('Saved!');
-              });
-          }
-      }).catch(err => {
-          console.log(err)
-      });
+  dialog.showSaveDialog({
+    title: 'Select the File Path to save',
+    defaultPath: path.join(__dirname, './SavedSurveys/NewSurvey.csv'),
+    buttonLabel: 'Save',
+    filters: [
+      {
+        name: 'Text Files',
+        extensions: ['txt', 'docx', 'csv']
+      }
+    ],
+    properties: []
+  }).then(file => {
+    if (!file.canceled) {
+      console.log(file.filePath.toString());
+        
+      // Creating and Writing to the sample.txt file
+      fs.writeFile(file.filePath.toString(),csv, function (err) {
+        if (err) throw err;
+          console.log('Saved!');
+          global.shared.surveyArray.length = 0;
+          win.webContents.send('SaveSuccess');
+        });
+      }
+    }).catch(err => {
+      console.log(err)
     });
-
-    /*fs.writeFile('testfile.csv', csv, function(err){
-      if(err) throw err;
-    });*/
-
 });
 
+function ConvertToCSV(objArray) {
+  var str = '';
+
+  for (var i = 0; i < objArray.length; i++) {
+      var line = '';
+      //Check to see if you want each piece of furniture individually comma
+    
+      line = objArray[i];
+      line += ',';
+      
+      console.log(line);
+
+      str += line + '\r\n';
+      
+  }
+
+  return str;
+}
 
 //takes a furnMap and returns it as an object array
 function mapToObj(inputMap) {
