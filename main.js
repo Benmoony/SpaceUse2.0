@@ -6,6 +6,7 @@ const fs = require('fs');
 const os = require('os');
 const global = require('./global.js');
 const { timeEnd } = require('console');
+const { resourceLimits } = require('worker_threads');
 
 
 //Global reference to the window object to prevent it being closed automatically when the JavaScript object is garbage collected
@@ -104,11 +105,66 @@ ipcMain.on('SaveFurniture', function(event, furnMap, sfloor){
   }
 
   let floorFurn = mapToObj(furnMap);
-  console.log(floorFurn);
 
   global.shared.surveyArray[sfloor][curfloor] = floorFurn;
   console.log(global.shared.surveyArray);
 });
+
+ipcMain.on('LoadLayout',()=>{
+
+  //Load File
+  dialog.showOpenDialog({
+    title: 'Select the Layouut to be uploaded',
+    defaultPath: path.join(__dirname, './Layouts/'),
+    buttonLabel: 'Upload',
+    // Restricting the user to only Text Files.
+    filters: [
+      {
+        name: 'Text Files',
+        extensions: ['txt', 'docx', 'csv', 'json']
+      }, ],
+    // Specifying the File Selector Property
+    properties: ['openFile']
+  }).then(file => {
+    // Stating whether dialog operation was
+    // cancelled or not.
+    console.log(file.canceled);
+    if (!file.canceled) {
+      // Updating the GLOBAL filepath variable 
+      // to user-selected file.
+      global.filepath = file.filePaths[0].toString();
+      console.log(global.filepath);
+
+      let rawdata = fs.readFileSync(global.filepath);
+      console.log(rawdata);
+      let json = JSON.parse(rawdata);
+      var data = [];
+      for(var i in json){
+        data.push([i, json[i]]);
+      }
+
+      if(data[0][1] != true){
+        console.log("Not A Layout");
+        return;
+      }
+      win.webContents.send('LoadLayoutSuccess', data);
+      
+    }  
+  }).catch(err => {
+    console.log(err)
+  });
+
+  //Send to Renderer
+
+});
+
+ipcMain.on('LoadSurvey', ()=>{
+  //Load File
+
+  //Send to Renderer
+
+});
+
 
 ipcMain.on('SaveSurvey',()=>{
   let date = new Date();
@@ -161,7 +217,6 @@ function ConvertToCSV(objArray) {
   for (var i = 0; i < objArray.length; i++) {
       var line = '';
       //Check to see if you want each piece of furniture individually comma
-    
       line = objArray[i];
       line += ',';
       

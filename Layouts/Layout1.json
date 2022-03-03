@@ -1,0 +1,41 @@
+{
+    "Layout" : true,
+    "Floor 1": {
+        "0":{
+            "fid": 1,
+            "num_seats": 2,
+            "x": 338,
+            "y": 122,
+            "ftype": 10,
+            "degree_offset": 0
+        }
+    },
+    "Floor 2": {
+        "0":{
+            "fid": 50,
+            "num_seats": 4, 
+            "x": 224,
+            "y": 223,
+            "ftype": 4,
+            "degree_offset": 0
+        },
+        "1":{
+            "fid": 51,
+            "num_seats": 4, 
+            "x": 218,
+            "y": 223,
+            "ftype": 4,
+            "degree_offset": 90
+        }
+    },
+    "Floor 3":{
+        "0":{
+            "fid": 100,
+            "num_seats": 1,
+            "x": 81.5,
+            "y": 112,
+            "ftype": 19,
+            "degree_offset": 0
+        }
+    }
+}

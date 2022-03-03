@@ -2,6 +2,7 @@
 //Initalize Map
 var L = require('leaflet');
 window.$ = window.jQuery = require('jquery');
+
 var imagepath = "";
 var sfloor = "";
 var selected_furn;
@@ -16,6 +17,8 @@ var RotateBtn = document.getElementById('rotate');
 var CheckAllBtn = document.getElementById('checkall');
 var MinusBtn = document.getElementById('minus');
 var PlusBtn = document.getElementById('plus');
+
+
 
 //to store the seat_places array to be saved
 var temp_seat_places = [];
@@ -34,6 +37,67 @@ floorBtn.addEventListener('click', function (event){
 function reinializePop(){
 	let obj = document.getElementById('MapContainer');
     obj.insertAdjacentHTML('afterend', '<div id="popup"><div id="seat_div"></div><div id="wb_div"></div><button id="save" style="display:none">Save and Exit</button><button id="lock">Unlock</button><button id="checkall" style="display:none">Check All</button><label id="seat_operator"></label><button id="minus" style="display:none">-</button><button id="plus" style="display:none">+</button></div>');
+    let popup= document.getElementById('popup');
+
+    SaveBtn = document.getElementById('save');
+    LockBtn = document.getElementById('lock');
+    //RotateBtn = document.getElementById('rotate');
+    CheckAllBtn = document.getElementById('checkall');
+    MinusBtn = document.getElementById('minus');
+    PlusBtn = document.getElementById('plus');
+
+    
+    MinusBtn.addEventListener('click', ()=>{
+        minus(selected_furn);
+    });
+
+    //calls when plus button is clicked
+    PlusBtn.addEventListener('click', ()=>{
+        var newSeat = new Seat(temp_seat_places.length);
+        temp_seat_places.push(newSeat);
+        plus(newSeat, temp_seat_places.length, true);
+        checkAll(selected_furn);
+    });
+
+    //called when save button is clicked on popup.
+    SaveBtn.addEventListener('click', ()=>{
+        var occupants = document.getElementById("occupantInput");
+        if(occupants)
+        {
+            selected_furn.totalOccupants = occupants.value;
+        }
+        selected_marker.setOpacity(1);
+        selected_furn.seat_places = temp_seat_places;
+        
+        if(temp_wb != [])
+        {
+            selected_furn.whiteboard = temp_wb;
+        }
+        
+        mymap.closePopup();
+    });
+
+    //helps lock or unlock furniture item on movement
+    LockBtn.addEventListener('click', ()=>{
+        var lockButton = document.getElementById("lock");
+        
+        if(lockButton.innerText === "Unlock")
+        {
+            selected_marker.dragging.enable();
+            lockButton.innerText = "Lock";
+        }        	
+        else
+        {
+            selected_marker.dragging.disable();
+            lockButton.innerText = "Unlock";
+        }
+        mymap.closePopup();
+    });
+
+    //called when checkall button is clicked.function
+    CheckAllBtn.addEventListener('click', ()=>{
+        checkAll(selected_furn);
+    });
 }
 
 //Initalize Map
@@ -170,6 +234,7 @@ function build_markers(furnitureArray){
 
         //make marker clickable
         marker.on('click', markerClick);
+        marker.setOpacity(.3);
 
         //update marker coords when a user stops dragging the marker, set to furniture object to indicate modified
         marker.on("dragend", function(e){
@@ -196,8 +261,6 @@ function build_markers(furnitureArray){
 
         //add furniture to the datamap to capture input information from data
         furnMap.set(furn_id.toString(), key);
-        console.log(furnMap);
-
     }
 }
 
@@ -251,18 +314,22 @@ function addMapPic(){
         //load furniture after image depending on selected layout.
         //Prebuild Layout in CSV File to JSON
         //TODO: implement Layout
+        console.log(global.layout);
 
-        //Test furniture piece
-        let test_furn_array = [];
-        let test_furn_1 = new Furniture(1, 2);
-        test_furn_1.x = 338;
-        test_furn_1.y = 122;
-        test_furn_1.ftype = 10;
-        test_furn_array.push(test_furn_1);
-        build_markers(test_furn_array);
+        let floordata = global.layout[sfloor][1];
 
-        //TODO: Implement read file of furniture layout
+        let furn_array = [];
 
+        for(i in floordata){
+            let furn = new Furniture(floordata[i].fid, floordata[i].num_seats);
+            furn.x = floordata[i].x;
+            furn.y = floordata[i].y;
+            furn.ftype = floordata[i].ftype;
+            furn.degree_offset = floordata[i].degree_offset;
+            furn_array.push(furn);
+        }
+        console.log(furn_array);
+        build_markers(furn_array);
     }
     else{
         console.log("Image Failed to Load");

@@ -6,7 +6,10 @@
 // process.
 
 //Path for the image of the floor
-const {ipcRenderer} = require('electron');
+const {ipcRenderer, ipcMain} = require('electron');
+const global = require('./global.js');
+var L = require('leaflet');
+
 
 //Form References
 const getNameForm = document.getElementById('ipcNameForm');
@@ -21,6 +24,8 @@ const backBtn = document.getElementById('backBtn');
 const surveyBtn = document.getElementById('surveyBtn');
 const saveFloor = document.getElementById('saveFloor');
 const saveSurvey = document.getElementById('saveSurvey');
+
+var layout = "";
 
 
 //TODO: USE EVENT BUBBLING on the MAP VIEW ID to ensure events are handled on Dynamically created objects
@@ -42,12 +47,20 @@ backBtn.addEventListener('click',()=>{
     ipcRenderer.send('back-to-previous');
     home.style.display = "none";
     mapView.style.display = "none";
-    saveFloor.style.display = "none";
     floorSelect.style.display = "none";
     getNameForm.style.display = "block";
 });
 
 surveyBtn.addEventListener('click',()=>{
+
+    //Load Layout from here
+    ipcRenderer.send('LoadLayout');
+});
+
+ipcRenderer.on('LoadLayoutSuccess', function(event, data){
+    global.layout = data;
+    //process layout data here from csv to JSON
+    console.log(global.layout);
     floorSelect.style.display = "block";
 });
 
@@ -66,10 +79,10 @@ ipcRenderer.on('SaveSuccess', ()=>{
     alert('File Saved');
     home.style.display = "none";
     mapView.style.display = "none";
-    saveFloor.style.display = "none";
     floorSelect.style.display = "none";
     getNameForm.style.display = "block";
 });
+
     
 
 

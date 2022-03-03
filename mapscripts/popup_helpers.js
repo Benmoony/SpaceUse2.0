@@ -1,60 +1,60 @@
 //Various Helper functions that assist in data collection popup user interface
-
 //Change this to bind all listeners to the Map Container
 //check the event target and add initate the correct code on ID match
+	//calls when minus button is clicked
 
-//calls when minus button is clicked
-MinusBtn.addEventListener('click', ()=>{
-    minus(selected_furn);
-});
+	MinusBtn.addEventListener('click', ()=>{
+		minus(selected_furn);
+	});
 
-//calls when plus button is clicked
-PlusBtn.addEventListener('click', ()=>{
-    var newSeat = new Seat(temp_seat_places.length);
-    temp_seat_places.push(newSeat);
-	plus(newSeat, temp_seat_places.length, true);
-	checkAll(selected_furn);
-});
+	//calls when plus button is clicked
+	PlusBtn.addEventListener('click', ()=>{
+		var newSeat = new Seat(temp_seat_places.length);
+		temp_seat_places.push(newSeat);
+		plus(newSeat, temp_seat_places.length, true);
+		checkAll(selected_furn);
+	});
 
-//called when save button is clicked on popup.
-SaveBtn.addEventListener('click', ()=>{
-    var occupants = document.getElementById("occupantInput");
-	if(occupants)
-	{
-		selected_furn.totalOccupants = occupants.value;
-	}
-	selected_marker.setOpacity(1);
-	selected_furn.seat_places = temp_seat_places;
-	
-	if(temp_wb != [])
-	{
-		selected_furn.whiteboard = temp_wb;
-	}
-	
-  	mymap.closePopup();
-});
+	//called when save button is clicked on popup.
+	SaveBtn.addEventListener('click', ()=>{
+		var occupants = document.getElementById("occupantInput");
+		if(occupants)
+		{
+			selected_furn.totalOccupants = occupants.value;
+		}
+		selected_marker.setOpacity(1);
+		selected_furn.seat_places = temp_seat_places;
+		
+		if(temp_wb != [])
+		{
+			selected_furn.whiteboard = temp_wb;
+		}
+		
+		mymap.closePopup();
+	});
 
-//helps lock or unlock furniture item on movement
-LockBtn.addEventListener('click', ()=>{
-    var lockButton = document.getElementById("lock");
-	
-	if(lockButton.innerText === "Unlock")
-	{
-		selected_marker.dragging.enable();
-		lockButton.innerText = "Lock";
-	}        	
-	else
-	{
-		selected_marker.dragging.disable();
-		lockButton.innerText = "Unlock";
-	}
-	mymap.closePopup();
-});
+	//helps lock or unlock furniture item on movement
+	LockBtn.addEventListener('click', ()=>{
+		var lockButton = document.getElementById("lock");
+		
+		if(lockButton.innerText === "Unlock")
+		{
+			selected_marker.dragging.enable();
+			lockButton.innerText = "Lock";
+		}        	
+		else
+		{
+			selected_marker.dragging.disable();
+			lockButton.innerText = "Unlock";
+		}
+		mymap.closePopup();
+	});
 
-//called when checkall button is clicked.function
-CheckAllBtn.addEventListener('click', ()=>{
-    checkAll(selected_furn);
-});
+	//called when checkall button is clicked.function
+	CheckAllBtn.addEventListener('click', ()=>{
+		checkAll(selected_furn);
+	});
+
 
 
 //This function helps rotate the furniture and appends the div after the furniture has been rotated.
