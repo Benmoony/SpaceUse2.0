@@ -60,7 +60,6 @@ surveyBtn.addEventListener('click',()=>{
 ipcRenderer.on('LoadLayoutSuccess', function(event, data){
     global.layout = data;
     //process layout data here from csv to JSON
-    console.log(global.layout);
     floorSelect.style.display = "block";
 });
 

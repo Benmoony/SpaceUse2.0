@@ -16,6 +16,7 @@ function markerClick(e){
 	document.getElementById("save").style.top = "40.5%";
 	
 	selected_furn = furnMap.get(this.options.fid);
+	console.log(selected_furn);
 	selected_marker = this;
 	selected_marker.dragging.disable();
 	

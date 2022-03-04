@@ -3,9 +3,136 @@
     "Floor 1": {
         "0":{
             "fid": 1,
+            "num_seats": 3,
+            "x": 181.25,
+            "y": 333.5,
+            "ftype": 10,
+            "degree_offset": 0
+        },
+        "1":{
+            "fid": 2,
+            "num_seats": 3,
+            "x": 170,
+            "y": 324,
+            "ftype": 10,
+            "degree_offset": 0
+        },
+        "2":{
+            "fid": 3,
+            "num_seats": 3,
+            "x": 176.25,
+            "y": 306,
+            "ftype": 10,
+            "degree_offset": 0
+        },
+        "3":{
+            "fid": 4,
+            "num_seats": 3,
+            "x": 167,
+            "y": 289,
+            "ftype": 10,
+            "degree_offset": 0
+        },
+        "4":{
+            "fid": 5,
+            "num_seats": 4,
+            "x": 150,
+            "y": 310.75,
+            "ftype": 10,
+            "degree_offset": 0
+        },
+        "5":{
+            "fid": 6,
+            "num_seats": 4,
+            "x": 142.25,
+            "y": 324,
+            "ftype": 10,
+            "degree_offset": 0
+        },
+        "6":{
+            "fid": 7,
             "num_seats": 2,
-            "x": 338,
-            "y": 122,
+            "x": 160,
+            "y": 303,
+            "ftype": 4,
+            "degree_offset": 90
+        },
+        "7":{
+            "fid": 8,
+            "num_seats": 2,
+            "x": 160,
+            "y": 299.5,
+            "ftype": 4,
+            "degree_offset": 90
+        },
+        "8":{
+            "fid": 9,
+            "num_seats": 2,
+            "x": 126,
+            "y": 338,
+            "ftype": 4,
+            "degree_offset": 0
+        },
+        "9":{
+            "fid": 10,
+            "num_seats": 2,
+            "x": 126,
+            "y": 331,
+            "ftype": 4,
+            "degree_offset": 0
+        },
+        "10":{
+            "fid": 11,
+            "num_seats": 2,
+            "x": 126,
+            "y": 324,
+            "ftype": 4,
+            "degree_offset": 0
+        },
+        "11":{
+            "fid": 12,
+            "num_seats": 2,
+            "x": 122.5,
+            "y": 333,
+            "ftype": 4,
+            "degree_offset": 0
+        },
+        "12":{
+            "fid": 13,
+            "num_seats": 2,
+            "x": 122.5,
+            "y": 326,
+            "ftype": 4,
+            "degree_offset": 0
+        },
+        "13":{
+            "fid": 14,
+            "num_seats": 2,
+            "x": 92.5,
+            "y": 333,
+            "ftype": 4,
+            "degree_offset": 0
+        },
+        "14":{
+            "fid": 15,
+            "num_seats": 2,
+            "x": 92.5,
+            "y": 326,
+            "ftype": 4,
+            "degree_offset": 0
+        },
+        "15":{
+            "fid": 16,
+            "num_seats": 3,
+            "x": 108,
+            "y": 333,
+            "degree_offset": 0
+        },
+        "16":{
+            "fid": 17,
+            "num_seats": 2,
+            "x": 108,
+            "y": 315,
             "ftype": 10,
             "degree_offset": 0
         }

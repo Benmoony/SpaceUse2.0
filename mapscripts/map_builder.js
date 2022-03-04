@@ -150,6 +150,7 @@ var marker = L.Marker.extend({
 	}
 });
 
+//for testing and finding furniture locations
 mymap.on('click', function(e){
     var coord = e.latlng;
     var lat = coord.lat;
@@ -193,7 +194,6 @@ function build_markers(furnitureArray){
         //prebuild furniture array in the form of furniture objects to add to the map
 
         var key = furnitureArray[i];
-        console.log(key);
         var furn_id = key.furn_id;
 
         var num_seats = parseInt(key.num_seats);
@@ -212,7 +212,6 @@ function build_markers(furnitureArray){
         var type =  parseInt(furniture_type);
 
         var sicon = getIconObj(type);
-        console.log(sicon);
 
         //initalize pointer to popup div
         var popup = document.getElementById("popup");
@@ -229,12 +228,9 @@ function build_markers(furnitureArray){
             fid: furn_id.toString()
         }).addTo(furnitureLayer).bindPopup(popup, popupDim);
 
-        console.log(furnitureLayer);
-        
-
         //make marker clickable
         marker.on('click', markerClick);
-        marker.setOpacity(.3);
+        marker.setOpacity(.6);
 
         //update marker coords when a user stops dragging the marker, set to furniture object to indicate modified
         marker.on("dragend", function(e){
@@ -256,7 +252,6 @@ function build_markers(furnitureArray){
             if(area_id !== "TBD"){
                 selected_furn.in_area = area_id;
             }
-            console.log(selected_furn);
         });
 
         //add furniture to the datamap to capture input information from data
@@ -307,15 +302,12 @@ function addMapPic(){
     }
 
     if(sfloor != '' && imagepath != ''){
-        console.log(imagepath);
         image = L.imageOverlay(imagepath, bounds);
         image.addTo(mymap);
 
         //load furniture after image depending on selected layout.
         //Prebuild Layout in CSV File to JSON
         //TODO: implement Layout
-        console.log(global.layout);
-
         let floordata = global.layout[sfloor][1];
 
         let furn_array = [];
@@ -328,7 +320,6 @@ function addMapPic(){
             furn.degree_offset = floordata[i].degree_offset;
             furn_array.push(furn);
         }
-        console.log(furn_array);
         build_markers(furn_array);
     }
     else{
@@ -347,7 +338,7 @@ function addMapPic(){
             case 4: markerSize= 80; break;
         }
         var newzoom = '' + (markerSize) +'px';
-        var newLargeZoom = '' + (markerSize*2) +'px';
+        var newLargeZoom = '' + (markerSize*1.5) +'px';
 
         $('.furnitureIcon').css({'width':newzoom,'height':newzoom});
         $('.furnitureLargeIcon').css({'width':newLargeZoom,'height':newLargeZoom});

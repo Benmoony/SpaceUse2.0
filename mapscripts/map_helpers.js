@@ -75,7 +75,7 @@ var ComputerStationIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureIcon',
 		iconUrl: './images/icons/square_table.svg',
-		iconSize: [5,5],
+		iconSize: [10,10],
 		iconAnchor: [2.5,2.5],
 		popupAnchor: [2.5,2.5]
 	}

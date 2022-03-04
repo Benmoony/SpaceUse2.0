@@ -107,7 +107,6 @@ ipcMain.on('SaveFurniture', function(event, furnMap, sfloor){
   let floorFurn = mapToObj(furnMap);
 
   global.shared.surveyArray[sfloor][curfloor] = floorFurn;
-  console.log(global.shared.surveyArray);
 });
 
 ipcMain.on('LoadLayout',()=>{
@@ -121,7 +120,7 @@ ipcMain.on('LoadLayout',()=>{
     filters: [
       {
         name: 'Text Files',
-        extensions: ['txt', 'docx', 'csv', 'json']
+        extensions: ['json']
       }, ],
     // Specifying the File Selector Property
     properties: ['openFile']
@@ -133,10 +132,8 @@ ipcMain.on('LoadLayout',()=>{
       // Updating the GLOBAL filepath variable 
       // to user-selected file.
       global.filepath = file.filePaths[0].toString();
-      console.log(global.filepath);
 
       let rawdata = fs.readFileSync(global.filepath);
-      console.log(rawdata);
       let json = JSON.parse(rawdata);
       var data = [];
       for(var i in json){
@@ -190,7 +187,7 @@ ipcMain.on('SaveSurvey',()=>{
     filters: [
       {
         name: 'Text Files',
-        extensions: ['txt', 'docx', 'csv']
+        extensions: ['csv']
       }
     ],
     properties: []
