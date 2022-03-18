@@ -7,6 +7,10 @@
     height:40em;
 }
 
+#spop{
+    overflow-y: scroll;
+}
+
 #occupantInput
 {
     width: 1.5em;

@@ -5,6 +5,7 @@ window.$ = window.jQuery = require('jquery');
 
 var imagepath = "";
 var sfloor = "";
+var isSurvey = false;
 var selected_furn;
 var selected_marker;
 var seat_num;
@@ -19,19 +20,28 @@ var MinusBtn = document.getElementById('minus');
 var PlusBtn = document.getElementById('plus');
 
 
-
 //to store the seat_places array to be saved
 var temp_seat_places = [];
 
 const floorBtn = document.getElementById('submitFloor');
+const surveyBtn = document.getElementById('surveyFloorSelect');
 
 //Add Floor to Global JSON
 floorBtn.addEventListener('click', function (event){
     event.preventDefault() // stop the form from submitting
     sfloor = document.getElementById("floor").value;
+    isSurvey = false;
     mapView.style.display = "block";
     addMapPic();
     //Add Furniture After Adding Items
+});
+
+surveyBtn.addEventListener('click', function (event){
+    event.preventDefault()
+    isSurvey = true;
+    sfloor.getElementById("sfloor").value;
+    mapView.style.display = "block";
+
 });
 
 function reinializePop(){
@@ -103,6 +113,7 @@ function reinializePop(){
 //Initalize Map
 var mymap = L.map('MapContainer', {crs: L.CRS.Simple, minZoom: 0, maxZoom: 4});
 var furnitureLayer = new L.layerGroup().addTo(mymap);
+var surveyLayer = new L.layerGroup().addTo(mymap);
 var areaLayer = L.layerGroup().addTo(mymap);
 var drawnItems = new L.FeatureGroup();
 var bounds = [[0,0], [360,550]];
@@ -138,6 +149,12 @@ var popupDim =
     'maxWidth': '5000',
     'maxHeight': '5000'
 };
+
+var surveyPopDim =
+{
+    'maxWidth': '300',
+    'maxHeight': '300'
+}
 
 //extend the marker class to add furniture data
 var marker = L.Marker.extend({
@@ -259,6 +276,55 @@ function build_markers(furnitureArray){
     }
 }
 
+function display_survey(surveyArray){
+    
+    for(var i in surveyArray){
+
+        var key = surveyArray[i];
+        var furn_id = key.furn_id;
+
+        var num_seats = parseInt(key.num_seats);
+
+        var x = key.x;
+        var y = key.y;
+        var degree_offset = key.degree_offset;
+        var furniture_type = key.ftype;
+        var seat_type = key.seat_type;
+
+        var latlng = [y,x];
+        area_id = "TBD";
+
+        //parse furniture type to an int, then get the correct icon
+        var type =  parseInt(furniture_type);
+
+        var sicon = getIconObj(type);
+
+        //initalize pointer to popup div
+        var spop = document.getElementById("surveyPopup");
+
+
+        //place a marker for each furniture 
+        marker = L.marker(latlng, {
+            icon: sicon,
+            rotationAngle: degree_offset,
+            rotationOrigin: "center",
+            draggable: false,
+            ftype: furniture_type,
+            numSeats: num_seats,
+            fid: furn_id.toString()
+        }).addTo(surveyLayer).bindPopup(spop, surveyPopDim);
+
+        //make marker clickable
+        marker.on('click', surveyClick);
+    }
+}
+
+function surveyClick(e){
+    let pop = document.getElementById('spop');
+    pop.style.display('block');
+    console.log(this);
+}
+
 //Add Image of Map to div
 function addMapPic(){
     //remove old floor imagepath and place newly selected floor imagepath
@@ -308,19 +374,35 @@ function addMapPic(){
         //load furniture after image depending on selected layout.
         //Prebuild Layout in CSV File to JSON
         //TODO: implement Layout
-        let floordata = global.layout[sfloor][1];
-
-        let furn_array = [];
-
-        for(i in floordata){
-            let furn = new Furniture(floordata[i].fid, floordata[i].num_seats);
-            furn.x = floordata[i].x;
-            furn.y = floordata[i].y;
-            furn.ftype = floordata[i].ftype;
-            furn.degree_offset = floordata[i].degree_offset;
-            furn_array.push(furn);
+        
+        if(isSurvey === true){
+            let surveydata = global.survey[sfloor][1];
+            let surv_array = [];
+            for(i in surveydata){
+                let furn = new Furniture(floordata[i].fid, floordata[i].num_seats);
+                furn.x = floordata[i].x;
+                furn.y = floordata[i].y;
+                furn.ftype = floordata[i].ftype;
+                furn.degree_offset = floordata[i].degree_offset;
+                surv_array.push(furn);
+            }
+            display_survey(surv_array);
         }
-        build_markers(furn_array);
+        else{
+            let floordata = global.layout[sfloor][1];
+            let furn_array = [];
+            for(i in floordata){
+                let furn = new Furniture(floordata[i].fid, floordata[i].num_seats);
+                furn.x = floordata[i].x;
+                furn.y = floordata[i].y;
+                furn.ftype = floordata[i].ftype;
+                furn.degree_offset = floordata[i].degree_offset;
+                furn_array.push(furn);
+            }
+            
+            build_markers(furn_array);
+        }
+        
     }
     else{
         console.log("Image Failed to Load");

@@ -6,7 +6,7 @@
 // process.
 
 //Path for the image of the floor
-const {ipcRenderer, ipcMain} = require('electron');
+const {ipcRenderer} = require('electron');
 const global = require('./global.js');
 var L = require('leaflet');
 
@@ -24,12 +24,7 @@ const backBtn = document.getElementById('backBtn');
 const surveyBtn = document.getElementById('surveyBtn');
 const saveFloor = document.getElementById('saveFloor');
 const saveSurvey = document.getElementById('saveSurvey');
-
-var layout = "";
-
-
-//TODO: USE EVENT BUBBLING on the MAP VIEW ID to ensure events are handled on Dynamically created objects
-//When click specific button in the div, use a certain function
+const loadSurvey = document.getElementById('loadSurveyBtn');
 
 //Process Surveyors Name
 getNameForm.addEventListener('submit', function (event){
@@ -55,6 +50,17 @@ surveyBtn.addEventListener('click',()=>{
 
     //Load Layout from here
     ipcRenderer.send('LoadLayout');
+});
+
+loadSurvey.addEventListener('click',()=>{
+    ipcRenderer.send('LoadSurvey');
+    surveyFloorSelect.style.display = "block";
+});
+
+ipcRenderer.on('LoadSuurveySuccess', function(event, data){
+    global.survey = data;
+    //process Survey data here from csv to JSON
+    floorSelect.style.display = "block";
 });
 
 ipcRenderer.on('LoadLayoutSuccess', function(event, data){
