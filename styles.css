@@ -29,6 +29,15 @@ body{
     color: cornsilk;
 }
 
+#surveyFloorSelect{
+    display: none;
+    padding: 1em;
+    background-color: cornflowerblue;
+    height:fit-content;
+    color: cornsilk;
+
+}
+
 #mapView{
     display:none;
     background-color: cornsilk;

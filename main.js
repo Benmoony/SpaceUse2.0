@@ -1,5 +1,6 @@
 // Modules to control application life and create native browser window
 const { app, Tray, BrowserWindow, Menu, dialog, ipcMain, globalShortcut} = require('electron');
+const csv = require('csv-parser');
 const path = require('path');
 const url = require('url');
 const fs = require('fs');
@@ -113,7 +114,7 @@ ipcMain.on('LoadLayout',()=>{
 
   //Load File
   dialog.showOpenDialog({
-    title: 'Select the Layouut to be uploaded',
+    title: 'Select the Layout to be uploaded',
     defaultPath: path.join(__dirname, './Layouts/'),
     buttonLabel: 'Upload',
     // Restricting the user to only Text Files.
@@ -151,14 +152,46 @@ ipcMain.on('LoadLayout',()=>{
     console.log(err)
   });
 
-  //Send to Renderer
 
 });
 
+
 ipcMain.on('LoadSurvey', ()=>{
   //Load File
+  dialog.showOpenDialog({
+    title: 'Select the Survey to be uploaded',
+    defaultPath: path.join(__dirname, './SavedSurveys/'),
+    buttonLabel: 'Upload',
+    // Restricting the user to only Text Files.
+    filters: [
+      {
+        name: 'Text Files',
+        extensions: ['json']
+      }, ],
+    // Specifying the File Selector Property
+    properties: ['openFile']
+  }).then(file => {
+    // Stating whether dialog operation was
+    // cancelled or not.
+    console.log(file.canceled);
+    if (!file.canceled) {
+      // Updating the GLOBAL filepath variable 
+      // to user-selected file.
+      global.filepath = file.filePaths[0].toString();
 
-  //Send to Renderer
+      let rawdata = fs.readFileSync(global.filepath);
+      let json = JSON.parse(rawdata);
+      var data = [];
+      for(var i in json){
+        data.push([i, json[i]]);
+      }
+
+      win.webContents.send('LoadSurveySuccess', data);
+
+    }  
+  }).catch(err => {
+    console.log(err)
+  });
 
 });
 
@@ -168,26 +201,24 @@ ipcMain.on('SaveSurvey',()=>{
   let TimeEnd = {'Time End': date};
   global.shared.surveyArray.push(TimeEnd);
   var toCSV = [];
-  for(i in global.shared.surveyArray){
-    var jsonObject = JSON.stringify(global.shared.surveyArray[i]);
-    toCSV.push(jsonObject);
-  }
+  var jsonObject = JSON.stringify(global.shared.surveyArray);
 
-  console.log(toCSV);
+  let month = date.getUTCMonth() + 1;
+  let day = date.getUTCDate();
+  let year = date.getUTCFullYear();
 
-  var csv = ConvertToCSV(toCSV);
-  console.log(csv);
-
+  let newdate = month + "-" + day + "-" + year;
+  let dpath = './SavedSurveys/' + newdate + '.json'
 
     //TODO: IMPLEMENT DIALOG OPTION FOR SAVE EVENT LISTENER
   dialog.showSaveDialog({
     title: 'Select the File Path to save',
-    defaultPath: path.join(__dirname, './SavedSurveys/NewSurvey.csv'),
+    defaultPath: path.join(__dirname, dpath),
     buttonLabel: 'Save',
     filters: [
       {
         name: 'Text Files',
-        extensions: ['csv']
+        extensions: ['json']
       }
     ],
     properties: []
@@ -196,7 +227,7 @@ ipcMain.on('SaveSurvey',()=>{
       console.log(file.filePath.toString());
         
       // Creating and Writing to the sample.txt file
-      fs.writeFile(file.filePath.toString(),csv, function (err) {
+      fs.writeFile(file.filePath.toString(),jsonObject, function (err) {
         if (err) throw err;
           console.log('Saved!');
           global.shared.surveyArray.length = 0;
@@ -208,7 +239,7 @@ ipcMain.on('SaveSurvey',()=>{
     });
 });
 
-function ConvertToCSV(objArray) {
+/*function ConvertToCSV(objArray) {
   var str = '';
 
   for (var i = 0; i < objArray.length; i++) {
@@ -224,7 +255,7 @@ function ConvertToCSV(objArray) {
   }
 
   return str;
-}
+}*/
 
 //takes a furnMap and returns it as an object array
 function mapToObj(inputMap) {

@@ -17,6 +17,7 @@ const getNameForm = document.getElementById('ipcNameForm');
 //Div References
 const home = document.getElementById('home');
 const floorSelect = document.getElementById('floorSelect');
+const surveyFloorSelect = document.getElementById('surveyFloorSelect');
 const mapView = document.getElementById('mapView');
 
 //Button References
@@ -43,24 +44,27 @@ backBtn.addEventListener('click',()=>{
     home.style.display = "none";
     mapView.style.display = "none";
     floorSelect.style.display = "none";
+    surveyFloorSelect.style.display = "none";
+    surveyBtn.disabled = false;
+    loadSurvey.disabled = false;
     getNameForm.style.display = "block";
 });
 
 surveyBtn.addEventListener('click',()=>{
-
     //Load Layout from here
     ipcRenderer.send('LoadLayout');
+    loadSurvey.disabled = true
 });
 
 loadSurvey.addEventListener('click',()=>{
     ipcRenderer.send('LoadSurvey');
-    surveyFloorSelect.style.display = "block";
+    surveyBtn.disabled = true;
 });
 
-ipcRenderer.on('LoadSuurveySuccess', function(event, data){
+ipcRenderer.on('LoadSurveySuccess', function(event, data){
     global.survey = data;
     //process Survey data here from csv to JSON
-    floorSelect.style.display = "block";
+    surveyFloorSelect.style.display = "block";
 });
 
 ipcRenderer.on('LoadLayoutSuccess', function(event, data){
@@ -85,6 +89,7 @@ ipcRenderer.on('SaveSuccess', ()=>{
     home.style.display = "none";
     mapView.style.display = "none";
     floorSelect.style.display = "none";
+    surveyFloorSelect.style.display = "none";
     getNameForm.style.display = "block";
 });
 
