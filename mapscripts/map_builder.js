@@ -24,7 +24,7 @@ var PlusBtn = document.getElementById('plus');
 var temp_seat_places = [];
 
 const floorBtn = document.getElementById('submitFloor');
-const surveyBtn = document.getElementById('surveyFloorSelect');
+const surveyfloorBtn = document.getElementById('surveyFloorSelect');
 
 //Add Floor to Global JSON
 floorBtn.addEventListener('click', function (event){
@@ -36,11 +36,12 @@ floorBtn.addEventListener('click', function (event){
     //Add Furniture After Adding Items
 });
 
-surveyBtn.addEventListener('click', function (event){
+surveyfloorBtn.addEventListener('click', function (event){
     event.preventDefault()
     isSurvey = true;
-    sfloor.getElementById("sfloor").value;
+    sfloor = document.getElementById("sfloor").value;
     mapView.style.display = "block";
+    addMapPic();
 
 });
 
@@ -319,9 +320,11 @@ function display_survey(surveyArray){
     }
 }
 
+
+//TODO Get popup properly filling with data
 function surveyClick(e){
     let pop = document.getElementById('spop');
-    pop.style.display('block');
+    pop.style.display = "block";
     console.log(this);
 }
 
@@ -376,15 +379,22 @@ function addMapPic(){
         //TODO: implement Layout
         
         if(isSurvey === true){
-            let surveydata = global.survey[sfloor][1];
+            let surveydata = global.survey[sfloor];
+            let floor = surveydata[1];
             let surv_array = [];
-            for(i in surveydata){
-                let furn = new Furniture(floordata[i].fid, floordata[i].num_seats);
-                furn.x = floordata[i].x;
-                furn.y = floordata[i].y;
-                furn.ftype = floordata[i].ftype;
-                furn.degree_offset = floordata[i].degree_offset;
-                surv_array.push(furn);
+
+            for(i in floor){
+
+                let s_array = surveydata[1][i];
+
+                for(j in s_array){
+                    let furn = new Furniture(s_array[j].furn_id, s_array[j].num_seats);
+                    furn.x = s_array[j].x;
+                    furn.y = s_array[j].y;
+                    furn.ftype = s_array[j].ftype;
+                    furn.degree_offset = s_array[j].degree_offset;
+                    surv_array.push(furn);
+                }
             }
             display_survey(surv_array);
         }
