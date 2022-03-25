@@ -1,7 +1,0 @@
-{"Surveyor":"Test Test"},
-{"Floor One":{"1":{"furn_id":1,"num_seats":2,"seat_places":[{"seatPos":0,"activity":[],"occupied":true},{"seatPos":1,"activity":[],"occupied":true}],"seat_type":32,"whiteboard":[],"total_occupants":0,"modified":false,"degree_offset":0,"x":338,"y":122,"ftype":10}}},
-{"Floor Two":[]},
-{"Floor Three":{"1":{"furn_id":1,"num_seats":2,"seat_places":[{"seatPos":0,"activity":[],"occupied":true},{"seatPos":1,"activity":[],"occupied":true}],"seat_type":32,"whiteboard":[],"total_occupants":0,"modified":false,"degree_offset":0,"x":338,"y":122,"ftype":10}}},
-{"Time Start":"2022-03-01T18:09:38.182Z"},
-{"Time End":"2022-03-01T18:11:12.678Z"},
-{"Time End":"2022-03-01T18:11:36.014Z"},

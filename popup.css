@@ -7,8 +7,14 @@
     height:40em;
 }
 
-#spop{
-    overflow-y: scroll;
+#surveyData{
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    background-color:aquamarine;
+    padding: 1em;
+    border-radius: .5;
+    top: 40px; right: 40px;
 }
 
 #occupantInput

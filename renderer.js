@@ -48,12 +48,13 @@ backBtn.addEventListener('click',()=>{
     surveyBtn.disabled = false;
     loadSurvey.disabled = false;
     getNameForm.style.display = "block";
+    document.getElementById("surveyData").style.display = "none";
 });
 
 surveyBtn.addEventListener('click',()=>{
     //Load Layout from here
     ipcRenderer.send('LoadLayout');
-    loadSurvey.disabled = true
+    
 });
 
 loadSurvey.addEventListener('click',()=>{
@@ -71,6 +72,7 @@ ipcRenderer.on('LoadLayoutSuccess', function(event, data){
     global.layout = data;
     //process layout data here from csv to JSON
     floorSelect.style.display = "block";
+    loadSurvey.disabled = true;
 });
 
 //Disable Submit Survey Button by Default.
@@ -91,6 +93,8 @@ ipcRenderer.on('SaveSuccess', ()=>{
     floorSelect.style.display = "none";
     surveyFloorSelect.style.display = "none";
     getNameForm.style.display = "block";
+    loadSurvey.disabled = false;
+    surveyBtn.disabled = false;
 });
 
     

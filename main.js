@@ -74,6 +74,7 @@ app.on('window-all-closed', function () {
 
 ipcMain.on('toMain', function(event, sname){
 
+  
   //Store the Surveyor's name in the global Array
   let Surveyor = {'Surveyor': sname};
   global.shared.surveyArray.push(Surveyor);

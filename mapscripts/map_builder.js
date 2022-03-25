@@ -11,6 +11,10 @@ var selected_marker;
 var seat_num;
 var floor_path;
 
+//Info For Uploaded Surveys
+var SurveyStartTime;
+var SurveyEndTime;
+
 //Buttons from DOM to apply helpers too
 var SaveBtn = document.getElementById('save');
 var LockBtn = document.getElementById('lock');
@@ -24,7 +28,7 @@ var PlusBtn = document.getElementById('plus');
 var temp_seat_places = [];
 
 const floorBtn = document.getElementById('submitFloor');
-const surveyfloorBtn = document.getElementById('surveyFloorSelect');
+const surveyfloorBtn = document.getElementById('subsurveyFloor');
 
 //Add Floor to Global JSON
 floorBtn.addEventListener('click', function (event){
@@ -278,19 +282,33 @@ function build_markers(furnitureArray){
 }
 
 function display_survey(surveyArray){
-    
+
+    var total_seats = 0;
+    var occupied_seats = 0;
+
     for(var i in surveyArray){
 
         var key = surveyArray[i];
         var furn_id = key.furn_id;
 
         var num_seats = parseInt(key.num_seats);
+        total_seats += num_seats; 
 
         var x = key.x;
         var y = key.y;
         var degree_offset = key.degree_offset;
         var furniture_type = key.ftype;
         var seat_type = key.seat_type;
+        var seat_places = key.seat_places;
+        var sumOccupant = 0;
+        for(var j = 0; j < seat_places.length; j++){
+
+            let seat = seat_places[j];
+            if(seat.occupied === true){
+                occupied_seats++;
+                sumOccupant++;
+            }
+        } 
 
         var latlng = [y,x];
         area_id = "TBD";
@@ -300,8 +318,13 @@ function display_survey(surveyArray){
 
         var sicon = getIconObj(type);
 
-        //initalize pointer to popup div
-        var spop = document.getElementById("surveyPopup");
+        //build Text Content of Seat
+        var popupString = "<strong>Seat ID: </strong>" 
+                        + furn_id.toString() 
+                        + "</br><strong>Total Occupants: </strong>" 
+                        + sumOccupant
+                        + "</br><strong>Max Occupants: </strong>"
+                        + num_seats;
 
 
         //place a marker for each furniture 
@@ -312,20 +335,37 @@ function display_survey(surveyArray){
             draggable: false,
             ftype: furniture_type,
             numSeats: num_seats,
+            seats: seat_places,
             fid: furn_id.toString()
-        }).addTo(surveyLayer).bindPopup(spop, surveyPopDim);
+        }).addTo(surveyLayer).bindPopup(popupString, surveyPopDim);
 
         //make marker clickable
         marker.on('click', surveyClick);
+
+        if(seat_places.length <= 0){
+            marker.setOpacity(.3);
+        }
     }
+
+    var dataWindow = document.getElementById('surveyData');
+    dataWindow.style.display = "block";
+
+    let datastring = "<strong>Survey Start: </strong>"
+    + SurveyStartTime
+    + "</br><strong>Survey End: </strong>"
+    + SurveyEndTime
+    + "</br><strong>Total Occupants: </strong>" 
+    + occupied_seats
+    + "</br><strong>Max Occupants: </strong>"
+    + total_seats;
+    dataWindow.innerHTML = datastring;
+
 }
 
 
 //TODO Get popup properly filling with data
 function surveyClick(e){
-    let pop = document.getElementById('spop');
-    pop.style.display = "block";
-    console.log(this);
+    let seats = this.options.seats;
 }
 
 //Add Image of Map to div
@@ -349,8 +389,11 @@ function addMapPic(){
             MinusBtn = document.getElementById('minus');
             PlusBtn = document.getElementById('plus');
         }
-        
-      
+    }
+
+    if(mymap.hasLayer(surveyLayer)){
+        mymap.removeLayer(surveyLayer);
+        surveyLayer = new L.layerGroup().addTo(mymap);
     }
 
     sfloor = parseInt(sfloor);
@@ -380,6 +423,8 @@ function addMapPic(){
         
         if(isSurvey === true){
             let surveydata = global.survey[sfloor];
+            SurveyStartTime = global.survey[9][1]["Time Start"];
+            SurveyEndTime = global.survey[10][1]["Time End"];
             let floor = surveydata[1];
             let surv_array = [];
 
@@ -392,6 +437,7 @@ function addMapPic(){
                     furn.x = s_array[j].x;
                     furn.y = s_array[j].y;
                     furn.ftype = s_array[j].ftype;
+                    furn.seat_places = s_array[j].seat_places;
                     furn.degree_offset = s_array[j].degree_offset;
                     surv_array.push(furn);
                 }
