@@ -83,6 +83,19 @@ var ComputerStationIcon = L.Icon.extend({
 
 var computerStation = new ComputerStationIcon();
 
+var ComputerStationLargeIcon = L.Icon.extend({
+	//this is called square_table in drive folder
+	options: {
+		className: 'furnitureLargeIcon',
+		iconUrl: './images/icons/square_table.svg',
+		iconSize: [20,20],
+		iconAnchor: [2.5,2.5],
+		popupAnchor: [2.5,2.5]
+	}
+});
+
+var computerStationLarge = new ComputerStationLargeIcon();
+
 var CollabStationIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureLargeIcon',
@@ -227,6 +240,18 @@ var RectTableIcon = L.Icon.extend({
 });
 
 var rectTable = new RectTableIcon();
+
+var RectTableIconlong = L.Icon.extend({
+	options: {
+		className: 'furnitureLongIcon',
+		iconUrl: './images/icons/rect_table.svg',
+		iconSize: [10,30],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
+	}
+});
+
+var rectTableLong = new RectTableIconlong();
 
 var RoomIcon = L.Icon.extend({
 	options: {
@@ -373,7 +398,7 @@ function getIconObj(furniture_type) {
 		case 2:
 		case 3:
 		case 4: selectedIcon=rectTable ; break;
-		case 5:
+		case 5: selectedIcon = rectTableLong; break;
 		case 6: selectedIcon=counterCurved; break;
 		case 7:
 		case 8:
@@ -384,7 +409,7 @@ function getIconObj(furniture_type) {
 		case 13: selectedIcon = couchThree ; break;
 		case 14: selectedIcon = couchFour; break;
 		case 15: selectedIcon = couchSix ; break;
-		case 16:
+		case 16: selectedIcon = computerStationLarge; break;
 		case 17:
 		case 18:
 		case 19: selectedIcon = collabStation; break;

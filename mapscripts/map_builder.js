@@ -210,6 +210,8 @@ function Seat(seatPos){
 //pass information from the layout to build the markers after loading layout file
 function build_markers(furnitureArray){
 
+    furnMap.clear();
+
     //define array of furniture to build markers from based on passed layout ID
     for(var i in furnitureArray){
 
@@ -423,8 +425,8 @@ function addMapPic(){
         
         if(isSurvey === true){
             let surveydata = global.survey[sfloor];
-            SurveyStartTime = global.survey[9][1]["Time Start"];
-            SurveyEndTime = global.survey[10][1]["Time End"];
+            SurveyStartTime = global.survey[4][1]["Time Start"];
+            SurveyEndTime = global.survey[5][1]["Time End"];
             let floor = surveydata[1];
             let surv_array = [];
 
@@ -477,9 +479,11 @@ function addMapPic(){
         }
         var newzoom = '' + (markerSize) +'px';
         var newLargeZoom = '' + (markerSize*1.5) +'px';
+        var newLongWidth = '' + (markerSize*4) +'px';
 
         $('.furnitureIcon').css({'width':newzoom,'height':newzoom});
         $('.furnitureLargeIcon').css({'width':newLargeZoom,'height':newLargeZoom});
+        $('.furnitureLongIcon').css({'width':newLargeZoom,'height':newLongWidth});
     });
 
 }

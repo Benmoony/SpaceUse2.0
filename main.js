@@ -105,6 +105,7 @@ ipcMain.on('SaveFurniture', function(event, furnMap, sfloor){
     case 2: curfloor = "Floor Two"; break;
     case 3: curfloor = "Floor Three"; break;
   }
+  //get floor data from furn map
 
   let floorFurn = mapToObj(furnMap);
 
@@ -207,8 +208,10 @@ ipcMain.on('SaveSurvey',()=>{
   let month = date.getUTCMonth() + 1;
   let day = date.getUTCDate();
   let year = date.getUTCFullYear();
+  let hours = date.getHours();
+  let min = date.getMinutes();
 
-  let newdate = month + "-" + day + "-" + year;
+  let newdate = "Survey__" + month + "-" + day + "-" + year + "_" + hours + "-" + min;
   let dpath = './SavedSurveys/' + newdate + '.json'
 
     //TODO: IMPLEMENT DIALOG OPTION FOR SAVE EVENT LISTENER
