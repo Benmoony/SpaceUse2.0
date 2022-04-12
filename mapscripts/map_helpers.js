@@ -46,9 +46,21 @@ var CircTableIcon = L.Icon.extend({
 
 var circTable = new CircTableIcon();
 
+var CircTableIconSmall = L.Icon.extend({
+    options: {
+		className: 'furnitureIcon',
+		iconUrl: './images/icons/circ_table.svg',
+		iconSize: [10, 10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
+    }
+});
+
+var circTableS = new CircTableIconSmall();
+
 var CouchThreeIcon = L.Icon.extend({
 	options: {
-		className: 'furnitureIcon',
+		className: 'furnitureLargeIcon',
 		iconUrl: './images/icons/couch_three.svg',
 		iconSize: [10, 10],
 		iconAnchor: [5,5],
@@ -135,7 +147,7 @@ var couchSix = new CouchSixIcon();
 
 var CouchTwoIcon = L.Icon.extend({
 	options: {
-		className: 'furnitureIcon',
+		className: 'furnitureLargeIcon',
 		iconUrl: './images/icons/couch_two.svg',
 		iconSize: [10, 10],
 		iconAnchor: [5,5],
@@ -402,8 +414,8 @@ function getIconObj(furniture_type) {
 		case 6: selectedIcon=counterCurved; break;
 		case 7:
 		case 8:
-		case 9:
-		case 10: selectedIcon = circTable; break;
+		case 9: selectedIcon = circTableS ; break;
+		case 10: selectedIcon = circTable ; break;
 		case 11: selectedIcon = couchCurved ; break;
 		case 12: selectedIcon = couchTwo ; break;
 		case 13: selectedIcon = couchThree ; break;

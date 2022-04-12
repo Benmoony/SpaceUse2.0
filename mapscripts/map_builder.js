@@ -1,5 +1,10 @@
 //All Map functions:
 //Initalize Map
+
+/*
+Created By Verja Miller
+MIT LISCENSE
+*/
 var L = require('leaflet');
 window.$ = window.jQuery = require('jquery');
 
