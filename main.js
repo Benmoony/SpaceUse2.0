@@ -9,7 +9,7 @@ const global = require('./global.js');
 const { timeEnd } = require('console');
 const { resourceLimits } = require('worker_threads');
 
-
+//Script for Deploying exe: npx electron-packager D:\GitHub\SpaceUse2.0 SpaceUse --platform=win32 --arch=x64     
 //Global reference to the window object to prevent it being closed automatically when the JavaScript object is garbage collected
 let win;
 
