@@ -25,4 +25,4 @@ Source Code: [here](https://github.com/Benmoony/SpaceUse2.0)
 * From everyone on the SpaceUse team, we would like to thank the Humboldt State University Library staff, as well as, Kris Anderson for the help and support throughout the project.
 
 ## SpaceUse User Manual
-[User Manual](https://docs.google.com/document/d/1Qbb-dlis2u87KZwG1Kl00LwKjKE1OTeb29Rze8zwXgI/edit?usp=sharing)
+[User Manual](https://docs.google.com/document/d/1nmXSrkrQp8cqMIU6R3FIVF3i1BkGdw4GJBkiU_lgpd4/edit?usp=sharing)
