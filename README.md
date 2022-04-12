@@ -19,7 +19,7 @@ Source Code: [here](https://github.com/Benmoony/SpaceUse2.0)
 [Electron](https://www.electronjs.org/)
 
 ## Authors
-* **Verja Miller**.
+* **Verja Miller** [linkedin](https://www.linkedin.com/in/verjamillerdev/).
 
 ## Acknowledgements
 * From everyone on the SpaceUse team, we would like to thank the Humboldt State University Library staff, as well as, Kris Anderson for the help and support throughout the project.
