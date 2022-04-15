@@ -70,6 +70,7 @@ ipcRenderer.on('LoadSurveySuccess', function(event, data){
 
 ipcRenderer.on('LoadLayoutSuccess', function(event, data){
     global.layout = data;
+    
     //process layout data here from csv to JSON
     floorSelect.style.display = "block";
     loadSurvey.disabled = true;

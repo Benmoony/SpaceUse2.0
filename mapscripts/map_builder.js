@@ -124,6 +124,7 @@ function reinializePop(){
 var mymap = L.map('MapContainer', {crs: L.CRS.Simple, minZoom: 0, maxZoom: 4});
 var furnitureLayer = new L.layerGroup().addTo(mymap);
 var surveyLayer = new L.layerGroup().addTo(mymap);
+var surveyaAreaLayer = new L.layerGroup().addTo(mymap);
 var areaLayer = L.layerGroup().addTo(mymap);
 var drawnItems = new L.FeatureGroup();
 var bounds = [[0,0], [360,550]];
@@ -197,6 +198,7 @@ function Furniture(fid, num_seats){
     this.whiteboard = [];
     this.total_occupants = 0;
     this.marker;
+    this.area_id;
     this.modified = false;
     this.degree_offset = 0;
     this.x;
@@ -210,6 +212,20 @@ function Seat(seatPos){
     //this.type = type;
     this.activity = [];
     this.occupied = false;
+}
+
+//Area Obj
+function Area(area_id, facilites_id, area_name){
+    this.area_id = area_id
+    this.facilites_id = facilites_id;
+    this.area_name = area_name;
+    this.area_vertices = [];
+    this.polyArea;
+}
+
+function AreaVertices(x,y){
+    this.x = x;
+    this.y = y;
 }
 
 //pass information from the layout to build the markers after loading layout file
@@ -235,7 +251,6 @@ function build_markers(furnitureArray){
         var seat_type = key.seat_type;
 
         var latlng = [y,x];
-        area_id = "TBD";
 
         //parse furniture type to an int, then get the correct icon
         var type =  parseInt(furniture_type);
@@ -272,12 +287,12 @@ function build_markers(furnitureArray){
             area_id="TBD";
             selected_furn.y = y;
             selected_furn.x = x;
-            /*areaMap.forEach(function(jtem, key, mapObj){
+            areaMap.forEach(function(jtem, key, mapObj){
                 
                 if(isMarkerInsidePolygon(y,x, jtem.polyArea)){
                     area_id = jtem.area_id;
                 }
-            });*/
+            });
             if(area_id !== "TBD"){
                 selected_furn.in_area = area_id;
             }
@@ -286,6 +301,8 @@ function build_markers(furnitureArray){
         //add furniture to the datamap to capture input information from data
         furnMap.set(furn_id.toString(), key);
     }
+
+    mymap.invalidateSize();
 }
 
 function display_survey(surveyArray){
@@ -385,7 +402,9 @@ function addMapPic(){
     //reinalize furniture layer
     if(mymap.hasLayer(furnitureLayer)){
         mymap.removeLayer(furnitureLayer);
+        mymap.removeLayer(areaLayer);
         furnitureLayer = new L.layerGroup().addTo(mymap);
+        areaLayer = new L.layerGroup().addTo(mymap);
 
         if(document.getElementById("popup") === null){
             reinializePop();
@@ -400,23 +419,28 @@ function addMapPic(){
 
     if(mymap.hasLayer(surveyLayer)){
         mymap.removeLayer(surveyLayer);
+        mymap.removeLayer(surveyaAreaLayer);
         surveyLayer = new L.layerGroup().addTo(mymap);
+        surveyaAreaLayer = new L.layerGroup().addTo(mymap);
     }
 
     sfloor = parseInt(sfloor);
-
+    let sfloorName = "";
     switch(sfloor){
         case 0:
             imagepath = "";
             break;
         case 1:
             imagepath = "./images/floor1.svg";
+            sfloorName = "Floor 1";
             break;
         case 2:
             imagepath = "./images/floor2.svg";
+            sfloorName = "Floor 2";
             break;
         case 3:
             imagepath = "./images/floor3.svg";
+            sfloorName = "Floor 3";
             break;
     }
 
@@ -430,6 +454,7 @@ function addMapPic(){
         
         if(isSurvey === true){
             let surveydata = global.survey[sfloor];
+            let surveyareadata = global.survey["Areas"];
             SurveyStartTime = global.survey[4][1]["Time Start"];
             SurveyEndTime = global.survey[5][1]["Time End"];
             let floor = surveydata[1];
@@ -453,15 +478,48 @@ function addMapPic(){
         }
         else{
             let floordata = global.layout[sfloor][1];
+            let areadata = global.layout[4][1][sfloorName];
             let furn_array = [];
+
+            for(i in areadata){
+                let cur_area_data = areadata[i];
+                let new_area = new Area(i, cur_area_data["facilities_id"], cur_area_data["name"]);
+                let points = areadata[i].points;
+                for(j in points){
+                    curpoint = points[j];
+                    let x = curpoint.v_x;
+                    let y = curpoint.v_y;
+                    var newVert = new AreaVertices(x, y);
+                    new_area.area_vertices.push(newVert);
+                }
+
+                var polyItem = drawArea(new_area);
+                new_area.polyArea = polyItem;
+                areaMap.set(i, new_area);
+                polyItem.addTo(areaLayer);
+                
+            }
+
+            //Build Furniture map from data to build markers
             for(i in floordata){
                 let furn = new Furniture(floordata[i].fid, floordata[i].num_seats);
                 furn.x = floordata[i].x;
                 furn.y = floordata[i].y;
                 furn.ftype = floordata[i].ftype;
                 furn.degree_offset = floordata[i].degree_offset;
+
+                areaMap.forEach(function(jtem, jkey, mapObj){
+				
+                    if(isMarkerInsidePolygon(furn.y,furn.x, jtem.polyArea)){
+                        furn.area_id = jtem.area_id;
+                    }
+                });
+
                 furn_array.push(furn);
             }
+
+            //draw AreaMaps and Store Data in Areas
+            
             
             build_markers(furn_array);
         }
@@ -491,4 +549,55 @@ function addMapPic(){
         $('.furnitureLongIcon').css({'width':newLargeZoom,'height':newLongWidth});
     });
 
+}
+
+function drawArea(area){
+	var verts = [];
+
+	for(var i=0; i < area.area_vertices.length; i++){
+		area_verts = area.area_vertices[i];
+		verts.push([area_verts.x,area_verts.y]);
+	}
+	var poly = L.polygon(verts);
+	poly.bindPopup(area.area_name);
+
+	return poly;
+}
+
+function isMarkerInsidePolygon(x,y, poly) {
+	var inside = false;
+	for (var ii=0;ii<poly.getLatLngs().length;ii++){
+		var polyPoints = poly.getLatLngs()[ii];
+		for (var i = 0, j = polyPoints.length - 1; i < polyPoints.length; j = i++) {
+			var xi = polyPoints[i].lat, yi = polyPoints[i].lng;
+			var xj = polyPoints[j].lat, yj = polyPoints[j].lng;
+
+			var intersect = ((yi > y) != (yj > y))
+				&& (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+			if (intersect) inside = !inside;
+		}
+	}
+
+	return inside;
+}
+
+function updateHelper(){
+	var outString="";
+	
+	furnMap.forEach(function(item, key, mapObj){
+		aid = "TBD";
+		x = item.x;
+		y = item.y;
+		areaMap.forEach(function(jtem, jkey, mapObj){
+				
+			if(isMarkerInsidePolygon(y,x, jtem.polyArea)){
+				aid = jtem.area_id;
+			}
+		});
+		if(area_id !== "TBD"){
+			item.in_area = aid;
+		}
+        outString+= updateFurn(item);
+		outString+="\n";
+	});
 }

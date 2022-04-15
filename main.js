@@ -81,9 +81,11 @@ ipcMain.on('toMain', function(event, sname){
   let f1 = {'Floor One': []};
   let f2 = {'Floor Two': []};
   let f3 = {'Floor Three': []};
+  let a = {'Areas': []};
   global.shared.surveyArray.push(f1);
   global.shared.surveyArray.push(f2);
   global.shared.surveyArray.push(f3);
+  global.shared.surveyArray.push(a);
   //Navigate to the homepage
   let date = new Date();
   let TimeStart = {'Time Start': date};
@@ -147,6 +149,7 @@ ipcMain.on('LoadLayout',()=>{
         console.log("Not A Layout");
         return;
       }
+      global.shared.surveyArray[4] = data[4];
       win.webContents.send('LoadLayoutSuccess', data);
       
     }  
@@ -202,7 +205,6 @@ ipcMain.on('SaveSurvey',()=>{
   let date = new Date();
   let TimeEnd = {'Time End': date};
   global.shared.surveyArray.push(TimeEnd);
-  var toCSV = [];
   var jsonObject = JSON.stringify(global.shared.surveyArray);
 
   let month = date.getUTCMonth() + 1;
