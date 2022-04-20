@@ -9,6 +9,7 @@
 const {ipcRenderer} = require('electron');
 const global = require('./global.js');
 var L = require('leaflet');
+const { selectors } = require('sizzle');
 
 
 //Form References
@@ -66,6 +67,23 @@ ipcRenderer.on('LoadSurveySuccess', function(event, data){
     global.survey = data;
     //process Survey data here from csv to JSON
     surveyFloorSelect.style.display = "block";
+});
+
+ipcRenderer.on('LoadDirectorySurveySuccess', function(event, data){
+    global.survey = data;
+    
+    //Enable floor slect for the surveys
+});
+
+ipcRenderer.on('LoadMultiSurveySuccess', function(event, data){
+    global.survey = data;
+    
+    //Enable floor slect for the surveys
+});
+
+multisurvey.addEventListener('click', ()=>{
+    //determine if the user selected multi or directory
+    //call UploadMultipleSurvey passing the upload type
 });
 
 ipcRenderer.on('LoadLayoutSuccess', function(event, data){
