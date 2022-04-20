@@ -221,6 +221,8 @@ function Area(area_id, facilites_id, area_name){
     this.area_name = area_name;
     this.area_vertices = [];
     this.polyArea;
+    this.totalOccupants = 0;
+    this.totalSeats = 0;
 }
 
 function AreaVertices(x,y){
@@ -318,6 +320,7 @@ function display_survey(surveyArray){
         var num_seats = parseInt(key.num_seats);
         total_seats += num_seats; 
 
+        var area = key.area_id;
         var x = key.x;
         var y = key.y;
         var degree_offset = key.degree_offset;
@@ -331,11 +334,24 @@ function display_survey(surveyArray){
             if(seat.occupied === true){
                 occupied_seats++;
                 sumOccupant++;
+
+                //add to area occupied seats here
+                if(area != undefined){
+                    areaMap.get(area).totalOccupants++; 
+                }
+                
             }
-        } 
+            
+            
+            
+        }
+
+        //add to area total seats;
+        if(area != undefined){
+            areaMap.get(area).totalSeats += num_seats;
+        }
 
         var latlng = [y,x];
-        area_id = "TBD";
 
         //parse furniture type to an int, then get the correct icon
         var type =  parseInt(furniture_type);
@@ -369,7 +385,12 @@ function display_survey(surveyArray){
         if(seat_places.length <= 0){
             marker.setOpacity(.3);
         }
+
+        
     }
+
+    console.log(areaMap);
+
 
     var dataWindow = document.getElementById('surveyData');
     dataWindow.style.display = "block";
@@ -381,9 +402,33 @@ function display_survey(surveyArray){
     + "</br><strong>Total Occupants: </strong>" 
     + occupied_seats
     + "</br><strong>Max Occupants: </strong>"
-    + total_seats;
+    + total_seats
+    + "</br><hr>";
     dataWindow.innerHTML = datastring;
 
+    //Display Area Popups here: Create Data String for each area and append it to the inner HTML
+
+    areaMap.forEach(function(item){
+        let p = ((item.totalOccupants / item.totalSeats) * 100).toFixed(2) + '%';
+
+        let areastring = "<Strong>Area: </strong>"
+        + item.area_name
+        + "</br><strong>Facilities ID: </strong>"
+        + item.facilites_id
+        + "</br><strong>Total Occupants: </strong>" 
+        + item.totalOccupants 
+        + "</br><strong>Max Occupants: </strong>"
+        + item.totalSeats
+        + "</br><strong>Percentage Used: </strong>"
+        + p
+        + "</br><hr>";
+
+        dataWindow.innerHTML += areastring;
+    });
+        
+    
+
+    mymap.invalidateSize();
 }
 
 
@@ -454,11 +499,31 @@ function addMapPic(){
         
         if(isSurvey === true){
             let surveydata = global.survey[sfloor];
-            let surveyareadata = global.survey["Areas"];
-            SurveyStartTime = global.survey[4][1]["Time Start"];
-            SurveyEndTime = global.survey[5][1]["Time End"];
+            let surveyareadata = global.survey[4][1][1][sfloorName];
+            SurveyStartTime = global.survey[5][1]["Time Start"];
+            SurveyEndTime = global.survey[6][1]["Time End"];
             let floor = surveydata[1];
             let surv_array = [];
+            
+
+            for(i in surveyareadata){
+                let cur_area_data = surveyareadata[i];
+                let new_area = new Area(i, cur_area_data["facilities_id"], cur_area_data["name"]);
+                let points = surveyareadata[i].points;
+                for(j in points){
+                    curpoint = points[j];
+                    let x = curpoint.v_x;
+                    let y = curpoint.v_y;
+                    var newVert = new AreaVertices(x, y);
+                    new_area.area_vertices.push(newVert);
+                }
+
+                var polyItem = drawArea(new_area);
+                new_area.polyArea = polyItem;
+                areaMap.set(i, new_area);
+                polyItem.addTo(surveyaAreaLayer);
+                
+            }
 
             for(i in floor){
 
@@ -471,9 +536,12 @@ function addMapPic(){
                     furn.ftype = s_array[j].ftype;
                     furn.seat_places = s_array[j].seat_places;
                     furn.degree_offset = s_array[j].degree_offset;
+                    furn.area_id = s_array[j].area_id;
+
                     surv_array.push(furn);
                 }
             }
+
             display_survey(surv_array);
         }
         else{
@@ -517,8 +585,6 @@ function addMapPic(){
 
                 furn_array.push(furn);
             }
-
-            //draw AreaMaps and Store Data in Areas
             
             
             build_markers(furn_array);
