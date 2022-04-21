@@ -440,9 +440,7 @@ function surveyClick(e){
 //Add Image of Map to div
 function addMapPic(){
     //remove old floor imagepath and place newly selected floor imagepath
-    if( mymap.hasLayer(image)){
-        mymap.removeLayer(image);
-    }
+    mymap.removeLayer(image);
 
     //reinalize furniture layer
     if(mymap.hasLayer(furnitureLayer)){

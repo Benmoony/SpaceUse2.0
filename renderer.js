@@ -79,7 +79,7 @@ ipcRenderer.on('LoadSurveySuccess', function(event, data){
 //Render Functions for Multi Survey
 showMultiSurvey.addEventListener('click',()=>{
     surveyBtn.disabled = true;
-    multimenu.style.display = block;
+    multimenu.style.display = "block";
 });
 
 msurvey.addEventListener('click', ()=>{
