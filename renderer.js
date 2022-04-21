@@ -20,6 +20,7 @@ const home = document.getElementById('home');
 const floorSelect = document.getElementById('floorSelect');
 const surveyFloorSelect = document.getElementById('surveyFloorSelect');
 const mapView = document.getElementById('mapView');
+const multimenu = document.getElementById('msurveySelect');
 
 //Button References
 const backBtn = document.getElementById('backBtn');
@@ -27,6 +28,10 @@ const surveyBtn = document.getElementById('surveyBtn');
 const saveFloor = document.getElementById('saveFloor');
 const saveSurvey = document.getElementById('saveSurvey');
 const loadSurvey = document.getElementById('loadSurveyBtn');
+const showMultiSurvey = document.getElementById('loadMultipleSurvey');
+const msurvey = document.getElementById('msurvey');
+const dsurvey = document.getElementById('dsurvey');
+
 
 //Process Surveyors Name
 getNameForm.addEventListener('submit', function (event){
@@ -46,6 +51,7 @@ backBtn.addEventListener('click',()=>{
     mapView.style.display = "none";
     floorSelect.style.display = "none";
     surveyFloorSelect.style.display = "none";
+    multimenu.style.display = "none";
     surveyBtn.disabled = false;
     loadSurvey.disabled = false;
     getNameForm.style.display = "block";
@@ -60,31 +66,51 @@ surveyBtn.addEventListener('click',()=>{
 
 loadSurvey.addEventListener('click',()=>{
     ipcRenderer.send('LoadSurvey');
-    surveyBtn.disabled = true;
+    
 });
 
 ipcRenderer.on('LoadSurveySuccess', function(event, data){
     global.survey = data;
     //process Survey data here from csv to JSON
     surveyFloorSelect.style.display = "block";
+    surveyBtn.disabled = true;
+});
+
+//Render Functions for Multi Survey
+showMultiSurvey.addEventListener('click',()=>{
+    surveyBtn.disabled = true;
+    multimenu.style.display = block;
+});
+
+msurvey.addEventListener('click', ()=>{
+    //determine if the user selected multi or directory
+    //call loadMultipleSurvey passing the upload type
+    ipcRenderer.send('LoadMultipleSurvey');
+});
+
+dsurvey.addEventListener('click', ()=>{
+    //determine if the user selected multi or directory
+    //call loadMultipleSurvey passing the upload type
+    ipcRenderer.send('LoadDirectory');
 });
 
 ipcRenderer.on('LoadDirectorySurveySuccess', function(event, data){
     global.survey = data;
+    surveyBtn.disabled = true;
+    surveyFloorSelect.style.display = "block";
     
     //Enable floor slect for the surveys
 });
 
 ipcRenderer.on('LoadMultiSurveySuccess', function(event, data){
     global.survey = data;
+    surveyBtn.disabled = true;
+    surveyFloorSelect.style.display = "block";
     
     //Enable floor slect for the surveys
 });
 
-multisurvey.addEventListener('click', ()=>{
-    //determine if the user selected multi or directory
-    //call UploadMultipleSurvey passing the upload type
-});
+
 
 ipcRenderer.on('LoadLayoutSuccess', function(event, data){
     global.layout = data;
@@ -111,6 +137,7 @@ ipcRenderer.on('SaveSuccess', ()=>{
     mapView.style.display = "none";
     floorSelect.style.display = "none";
     surveyFloorSelect.style.display = "none";
+    multimenu.style.display = "none";
     getNameForm.style.display = "block";
     loadSurvey.disabled = false;
     surveyBtn.disabled = false;

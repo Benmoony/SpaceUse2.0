@@ -21,6 +21,14 @@ body{
     color: cornsilk;
 }
 
+#msurveySelect{
+    display: none;
+    padding: 1em;
+    background-color: coral;
+    height:fit-content;
+    color: cornsilk;
+}
+
 #floorSelect{
     display: none;
     padding: 1em;
