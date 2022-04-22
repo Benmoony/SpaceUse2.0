@@ -21,6 +21,7 @@ const floorSelect = document.getElementById('floorSelect');
 const surveyFloorSelect = document.getElementById('surveyFloorSelect');
 const mapView = document.getElementById('mapView');
 const multimenu = document.getElementById('msurveySelect');
+const msurveyFloorSelect = document.getElementById('msurveyFloorSelect');
 
 //Button References
 const backBtn = document.getElementById('backBtn');
@@ -51,11 +52,14 @@ backBtn.addEventListener('click',()=>{
     mapView.style.display = "none";
     floorSelect.style.display = "none";
     surveyFloorSelect.style.display = "none";
+    msurveyFloorSelect.style.display = "none";
     multimenu.style.display = "none";
     surveyBtn.disabled = false;
     loadSurvey.disabled = false;
     getNameForm.style.display = "block";
     document.getElementById("surveyData").style.display = "none";
+    isSurvey = false;
+    isMulti = false;
 });
 
 surveyBtn.addEventListener('click',()=>{
@@ -97,24 +101,20 @@ dsurvey.addEventListener('click', ()=>{
 ipcRenderer.on('LoadDirectorySurveySuccess', function(event, data){
     global.survey = data;
     surveyBtn.disabled = true;
-    surveyFloorSelect.style.display = "block";
+    msurveyFloorSelect.style.display = "block";
     
-    //Enable floor slect for the surveys
 });
 
 ipcRenderer.on('LoadMultiSurveySuccess', function(event, data){
     global.survey = data;
     surveyBtn.disabled = true;
-    surveyFloorSelect.style.display = "block";
-    
-    //Enable floor slect for the surveys
+    msurveyFloorSelect.style.display = "block";
 });
 
 
 
 ipcRenderer.on('LoadLayoutSuccess', function(event, data){
     global.layout = data;
-    
     //process layout data here from csv to JSON
     floorSelect.style.display = "block";
     loadSurvey.disabled = true;
@@ -141,6 +141,8 @@ ipcRenderer.on('SaveSuccess', ()=>{
     getNameForm.style.display = "block";
     loadSurvey.disabled = false;
     surveyBtn.disabled = false;
+    isMulti = false;
+    isSurvey = false;
 });
 
     

@@ -11,6 +11,7 @@ window.$ = window.jQuery = require('jquery');
 var imagepath = "";
 var sfloor = "";
 var isSurvey = false;
+var isMulti = false;
 var selected_furn;
 var selected_marker;
 var seat_num;
@@ -34,12 +35,14 @@ var temp_seat_places = [];
 
 const floorBtn = document.getElementById('submitFloor');
 const surveyfloorBtn = document.getElementById('subsurveyFloor');
+const msurveyfloorBtn = document.getElementById('msubsurveyFloor');
 
 //Add Floor to Global JSON
 floorBtn.addEventListener('click', function (event){
     event.preventDefault() // stop the form from submitting
     sfloor = document.getElementById("floor").value;
     isSurvey = false;
+    isMulti = false;
     mapView.style.display = "block";
     addMapPic();
     //Add Furniture After Adding Items
@@ -48,10 +51,20 @@ floorBtn.addEventListener('click', function (event){
 surveyfloorBtn.addEventListener('click', function (event){
     event.preventDefault()
     isSurvey = true;
+    isMulti = false;
     sfloor = document.getElementById("sfloor").value;
     mapView.style.display = "block";
     addMapPic();
 
+});
+
+msurveyfloorBtn.addEventListener('click', function (event){
+    event.preventDefault();
+    mapView.style.display = "block";
+    sfloor = document.getElementById('msfloor').value;
+    isMulti = true;
+    isSurvey = false;
+    addMapPic();
 });
 
 function reinializePop(){
@@ -389,9 +402,6 @@ function display_survey(surveyArray){
         
     }
 
-    console.log(areaMap);
-
-
     var dataWindow = document.getElementById('surveyData');
     dataWindow.style.display = "block";
 
@@ -430,6 +440,7 @@ function display_survey(surveyArray){
 
     mymap.invalidateSize();
 }
+
 
 
 //TODO Get popup properly filling with data
@@ -496,8 +507,10 @@ function addMapPic(){
         //load furniture after image depending on selected layout.
         //Prebuild Layout in CSV File to JSON
         //TODO: implement Layout
-        
-        if(isSurvey === true){
+        if(isMulti === true){
+            display_multisurvey(global.survey, sfloor, sfloorName);
+        } 
+        else if(isSurvey === true){
             let surveydata = global.survey[sfloor];
             let surveyareadata = global.survey[4][1][1][sfloorName];
             SurveyStartTime = global.survey[5][1]["Time Start"];

@@ -41,6 +41,15 @@ body{
 
 }
 
+#msurveyFloorSelect{
+    display: none;
+    padding: 1em;
+    background-color: rgb(41, 137, 216);
+    height:fit-content;
+    color: cornsilk;
+
+}
+
 #mapView{
     display:none;
     background-color: cornsilk;

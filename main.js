@@ -220,13 +220,14 @@ ipcMain.on('LoadDirectory', ()=>{
     if (!file.canceled) {
       // Updating the GLOBAL filepath variable 
       // to user-selected file.
-      global.filepath = file.filePaths[0].toString();
-
-      let rawdata = fs.readFileSync(global.filepath);
-      let json = JSON.parse(rawdata);
       var data = [];
-      for(var i in json){
-        data.push([i, json[i]]);
+      for(let i = 0; i < file.filePaths.length; i++){
+        global.filepath = file.filePaths[i].toString();
+        let rawdata = fs.readFileSync(global.filepath);
+        let json = JSON.parse(rawdata);
+       
+        data.push(json);
+        
       }
 
       win.webContents.send('LoadDirectorySurveySuccess', data);
@@ -258,15 +259,16 @@ ipcMain.on('LoadMultipleSurvey', ()=>{
     if (!file.canceled) {
       // Updating the GLOBAL filepath variable 
       // to user-selected file.
-      global.filepath = file.filePaths[0].toString();
-
-      let rawdata = fs.readFileSync(global.filepath);
-      let json = JSON.parse(rawdata);
       var data = [];
-      for(var i in json){
-        data.push([i, json[i]]);
+      for(let i = 0; i < file.filePaths.length; i++){
+        global.filepath = file.filePaths[i].toString();
+        let rawdata = fs.readFileSync(global.filepath);
+        let json = JSON.parse(rawdata);
+       
+        data.push(json);
+        
       }
-
+      
       win.webContents.send('LoadMultiSurveySuccess', data);
 
     } 
