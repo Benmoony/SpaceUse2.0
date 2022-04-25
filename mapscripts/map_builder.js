@@ -254,7 +254,7 @@ function build_markers(furnitureArray){
         //prebuild furniture array in the form of furniture objects to add to the map
 
         var key = furnitureArray[i];
-        var furn_id = key.furn_id;
+        var furn_id = key.fid;
 
         var num_seats = parseInt(key.num_seats);
         //var newFurn = new Furniture(furn_id, num_seats);
