@@ -137,7 +137,7 @@ function reinializePop(){
 var mymap = L.map('MapContainer', {crs: L.CRS.Simple, minZoom: 0, maxZoom: 4});
 var furnitureLayer = new L.layerGroup().addTo(mymap);
 var surveyLayer = new L.layerGroup().addTo(mymap);
-var surveyaAreaLayer = new L.layerGroup().addTo(mymap);
+var surveyAreaLayer = new L.layerGroup().addTo(mymap);
 var areaLayer = L.layerGroup().addTo(mymap);
 var drawnItems = new L.FeatureGroup();
 var bounds = [[0,0], [360,550]];
@@ -328,7 +328,7 @@ function display_survey(surveyArray){
     for(var i in surveyArray){
 
         var key = surveyArray[i];
-        var furn_id = key.furn_id;
+        var furn_id = key.fid;
 
         var num_seats = parseInt(key.num_seats);
         total_seats += num_seats; 
@@ -475,9 +475,9 @@ function addMapPic(){
 
     if(mymap.hasLayer(surveyLayer)){
         mymap.removeLayer(surveyLayer);
-        mymap.removeLayer(surveyaAreaLayer);
+        mymap.removeLayer(surveyAreaLayer);
         surveyLayer = new L.layerGroup().addTo(mymap);
-        surveyaAreaLayer = new L.layerGroup().addTo(mymap);
+        surveyAreaLayer = new L.layerGroup().addTo(mymap);
     }
 
     sfloor = parseInt(sfloor);
@@ -534,7 +534,7 @@ function addMapPic(){
                 var polyItem = drawArea(new_area);
                 new_area.polyArea = polyItem;
                 areaMap.set(i, new_area);
-                polyItem.addTo(surveyaAreaLayer);
+                polyItem.addTo(surveyAreaLayer);
                 
             }
 
