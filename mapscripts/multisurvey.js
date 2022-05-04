@@ -1,38 +1,5 @@
 const { map } = require("leaflet");
 
-function Furniture(fid, numSeats, x, y, degree_offset, ftype, avgUseRatio, avgOccupancy, sumOccupants, modified_count, mod_array, activities){
-	this.fid = fid;
-	this.numSeats = numSeats;
-	this.x = x;
-	this.y = y;
-	this.degree_offset = degree_offset;
-	this.ftype = ftype;
-	this.avgUseRatio = avgUseRatio;
-	this.avgOccupancy = avgOccupancy;
-	this.sumOccupants = sumOccupants;
-	this.modified_count = modified_count;
-	this.mod_array = mod_array;
-	this.activities = activities;
-	this.arrOccupants = [];
-}
-
-function Area(area_id, facilites_id, area_name){
-    this.area_id = area_id
-    this.facilites_id = facilites_id;
-    this.area_name = area_name;
-    this.area_vertices = [];
-    this.polyArea;
-    this.totalOccupants = 0;
-    this.totalSeats = 0;
-    this.avgPopArea = 0;
-	this.avgRatio = 0;
-	this.totalSeatsUsed = 0;
-	this.peak = 0;
-	this.peakSurvey = 0;
-	this.peakDate = 0;
-}
-
-
 var surveyPopDim =
 {
     'maxWidth': '300',
@@ -43,8 +10,10 @@ const threshold = .2;
 var num_surveys = 0;
 var total_floor_vistors = 0;
 
+
 function display_multisurvey(data, sfloor, sfloorName){
 
+	areaMap.clear();
 	if(mymap.hasLayer(surveyLayer)){
         mymap.removeLayer(surveyLayer);
         mymap.removeLayer(surveyAreaLayer);
@@ -84,7 +53,7 @@ function display_multisurvey(data, sfloor, sfloorName){
 
         for(i in floor){
 
-            let s_array = surveydata[1][i];
+            let s_array = floor[i];
 
             for(j in s_array){
                 //Check to see if furn exists in furnmap based on furn ID, if not create new element, if it does, add info to map
@@ -104,7 +73,7 @@ function display_multisurvey(data, sfloor, sfloorName){
 					furn.sumOccupants = s_array[j].total_occupants;
 					furn.arrOccupants.push(s_array[j].total_occupants);
 
-					furnMap.set(furn.fid, furn);
+					furnMap.set(furn.furn_id, furn);
 				}
                 
             }
@@ -120,7 +89,7 @@ function display_multisurvey(data, sfloor, sfloorName){
 		value.avgOccupancy = sum / arr.length;
 		value.avgUseRatio = (sum / arr.length) * 100;
 
-		var furn_id = value.fid;
+		var furn_id = value.furn_id;
 
         var num_seats = parseInt(key.num_seats);
         //var newFurn = new Furniture(furn_id, num_seats);
@@ -140,7 +109,7 @@ function display_multisurvey(data, sfloor, sfloorName){
 
 
 		var popupString = "<strong>Average Occupancy: </strong>" 
-			+ value.avgOccupancy + " of " + value.numSeats 
+			+ value.avgOccupancy + " of " + value.num_seats 
 			+ "</br><strong>Total Occupants: </strong>" + value.sumOccupants 
 			+ "</br><strong>Average Use: </strong>" + Math.round(value.avgUseRatio) +"%";
 
@@ -182,6 +151,7 @@ function display_multisurvey(data, sfloor, sfloorName){
 	}
 
 	calculateAreaData();
+	calculateAreaPeaks(data);
 	mymap.invalidateSize();
 }
 
@@ -204,7 +174,7 @@ function calculateAreaData(){
 				//check if the furniture is in the current area we are collecting data on
 				if(cur_furn.area_id === cur_area.area_id && cur_furn.area_id != null){
 					area_furn_count++;
-					max_seats += parseInt(cur_furn.numSeats);
+					max_seats += parseInt(cur_furn.num_seats);
 					area_ratio_sum += parseFloat(cur_furn.avgUseRatio);
 					total_seats_used += parseInt(cur_furn.sumOccupants);
 				}
@@ -222,8 +192,8 @@ function calculateAreaData(){
 			}
 		}
 		//calculate area data based on now consolidated furniture data
-		cur_area.numSeats = max_seats;
-		floorMaxSeats += cur_area.numSeats;
+		cur_area.num_seats = max_seats;
+		floorMaxSeats += cur_area.num_seats;
 		cur_area.avgPopArea = total_seats_used/num_surveys;
 		avgFloorPop += cur_area.avgPopArea;
 		cur_area.avgRatio = area_ratio_sum/area_furn_count;
@@ -231,9 +201,13 @@ function calculateAreaData(){
 		total_floor_vistors += cur_area.totalSeatsUsed;
 
 		//call fuunction to draw area's after
-		drawAreaMulti(cur_area).addTo(surveyaAreaLayer);
+		drawAreaMulti(cur_area).addTo(surveyAreaLayer);
 
 	}
+}
+
+function calculateAreaPeaks(data){
+	
 }
 
 function drawAreaMulti(area){
@@ -245,9 +219,9 @@ function drawAreaMulti(area){
 
 	var poly = L.polygon(curVerts);
 	popupString = "<strong>"+area.area_name +"</strong></br>Number of Seats: "
-		+ area.numSeats +"</br>Average Area Population: " + Math.round((area.avgPopArea) * 100)/100
+		+ area.num_seats +"</br>Average Area Population: " + Math.round((area.avgPopArea) * 100)/100
 		+"</br>Percentage Use: "
-		+ Math.round(((area.avgPopArea/area.numSeats) * 100) * 100)/100
+		+ Math.round(((area.avgPopArea/area.num_seats) * 100) * 100)/100
 		+ "%</br>Ratio of use over Period: "
 		+ Math.round((area.avgRatio * 100) * 100)/100 
 		+ "%</br>Peak Population: "
@@ -258,7 +232,7 @@ function drawAreaMulti(area){
 	poly.bindPopup(popupString);
 
 	let area_string = "";
-	if(area.numSeats != 0){
+	if(area.num_seats != 0){
 		area_string += popupString + "</br></br>";
 	}
 	else{
@@ -272,7 +246,7 @@ function drawAreaMulti(area){
 
 	//convert the varables to numbers, if not you will get unexpected results
 	//https://www.w3schools.com/js/js_comparisons.asp
-	var area_use = Number((area.avgPopArea/area.numSeats)*100);
+	var area_use = Number((area.avgPopArea/area.num_seats)*100);
 
 	if(area_use < threshold){
 		poly.setStyle({fillColor:"red"});

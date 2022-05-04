@@ -217,6 +217,13 @@ function Furniture(fid, num_seats){
     this.x;
     this.y;
     this.ftype;
+    this.avgUseRatio;
+	this.avgOccupancy;
+	this.sumOccupants;
+	this.modified_count;
+	this.mod_array;
+	this.activities;
+	this.arrOccupants = [];
 }
 
 //Seat Obj
@@ -236,6 +243,14 @@ function Area(area_id, facilites_id, area_name){
     this.polyArea;
     this.totalOccupants = 0;
     this.totalSeats = 0;
+    this.totalOccupants = 0;
+    this.totalSeats = 0;
+    this.avgPopArea = 0;
+	this.avgRatio = 0;
+	this.totalSeatsUsed = 0;
+	this.peak = 0;
+	this.peakSurvey = 0;
+	this.peakDate = 0;
 }
 
 function AreaVertices(x,y){
@@ -254,7 +269,7 @@ function build_markers(furnitureArray){
         //prebuild furniture array in the form of furniture objects to add to the map
 
         var key = furnitureArray[i];
-        var furn_id = key.fid;
+        var furn_id = key.furn_id;
 
         var num_seats = parseInt(key.num_seats);
         //var newFurn = new Furniture(furn_id, num_seats);
@@ -304,7 +319,7 @@ function build_markers(furnitureArray){
             selected_furn.x = x;
             areaMap.forEach(function(jtem, key, mapObj){
                 
-                if(isMarkerInsidePolygon(y,x, jtem.polyArea)){
+                if(isMarkerInsidePolygon(y, x, jtem.polyArea)){
                     area_id = jtem.area_id;
                 }
             });
@@ -328,7 +343,7 @@ function display_survey(surveyArray){
     for(var i in surveyArray){
 
         var key = surveyArray[i];
-        var furn_id = key.fid;
+        var furn_id = key.furn_id;
 
         var num_seats = parseInt(key.num_seats);
         total_seats += num_seats; 
@@ -347,20 +362,17 @@ function display_survey(surveyArray){
             if(seat.occupied === true){
                 occupied_seats++;
                 sumOccupant++;
-
+                
                 //add to area occupied seats here
-                if(area != undefined){
+                if(area != undefined && area < areaMap.size){
                     areaMap.get(area).totalOccupants++; 
                 }
                 
             }
-            
-            
-            
         }
-
+        
         //add to area total seats;
-        if(area != undefined){
+        if(area != undefined && area < areaMap.size){
             areaMap.get(area).totalSeats += num_seats;
         }
 
@@ -517,8 +529,8 @@ function addMapPic(){
             SurveyEndTime = global.survey[6][1]["Time End"];
             let floor = surveydata[1];
             let surv_array = [];
-            
 
+            areaMap.clear();
             for(i in surveyareadata){
                 let cur_area_data = surveyareadata[i];
                 let new_area = new Area(i, cur_area_data["facilities_id"], cur_area_data["name"]);
@@ -588,10 +600,9 @@ function addMapPic(){
                 furn.y = floordata[i].y;
                 furn.ftype = floordata[i].ftype;
                 furn.degree_offset = floordata[i].degree_offset;
-
                 areaMap.forEach(function(jtem, jkey, mapObj){
 				
-                    if(isMarkerInsidePolygon(furn.y,furn.x, jtem.polyArea)){
+                    if(isMarkerInsidePolygon(furn.y, furn.x, jtem.polyArea)){
                         furn.area_id = jtem.area_id;
                     }
                 });
@@ -669,7 +680,7 @@ function updateHelper(){
 		y = item.y;
 		areaMap.forEach(function(jtem, jkey, mapObj){
 				
-			if(isMarkerInsidePolygon(y,x, jtem.polyArea)){
+			if(isMarkerInsidePolygon(y, x, jtem.polyArea)){
 				aid = jtem.area_id;
 			}
 		});
