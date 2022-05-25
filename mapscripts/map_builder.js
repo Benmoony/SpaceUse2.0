@@ -209,7 +209,6 @@ function Furniture(fid, num_seats){
     this.seat_places = [];
     this.seat_type = 32;
     this.whiteboard = [];
-    this.total_occupants = 0;
     this.marker;
     this.area_id;
     this.modified = false;
@@ -224,6 +223,7 @@ function Furniture(fid, num_seats){
 	this.mod_array;
 	this.activities;
 	this.arrOccupants = [];
+    this.peakuse;
 }
 
 //Seat Obj
@@ -353,7 +353,6 @@ function display_survey(surveyArray){
         var y = key.y;
         var degree_offset = key.degree_offset;
         var furniture_type = key.ftype;
-        var seat_type = key.seat_type;
         var seat_places = key.seat_places;
         var sumOccupant = 0;
         for(var j = 0; j < seat_places.length; j++){

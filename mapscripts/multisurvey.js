@@ -9,7 +9,8 @@ var surveyPopDim =
 const threshold = .2;
 var num_surveys = 0;
 var total_floor_vistors = 0;
-
+var dateMap = new Map();
+var dataWindow = document.getElementById('surveyData');
 
 function display_multisurvey(data, sfloor, sfloorName){
 
@@ -26,6 +27,7 @@ function display_multisurvey(data, sfloor, sfloorName){
 	total_floor_vistors = 0;
 
     for(i in surveyareadata){
+		
         let cur_area_data = surveyareadata[i];
         let new_area = new Area(i, cur_area_data["facilities_id"], cur_area_data["name"]);
         let points = surveyareadata[i].points;
@@ -45,10 +47,28 @@ function display_multisurvey(data, sfloor, sfloorName){
         
     }
 
+	let timestart = data[0][5]['Time Start'];
+	let timeend = data[data.length - 1][6]['Time End'];
+	dataWindow.style.display = "block";
+	let datastring = "<strong>Survey Number: </strong>"
+    + data.length
+    + "</br><strong>Survey Range Start: </strong>"
+    + timestart
+	+ "</br><strong>Survey Range End: </strong>"
+    + timeend
+    /*+ "</br><strong>Total Occupants: </strong>" 
+    + occupied_seats
+    + "</br><strong>Max Occupants: </strong>"
+    + total_seats*/
+    + "</br><hr>";
+    dataWindow.innerHTML = datastring;
+
     for(var a in data){
 		num_surveys++;
         let surveydata = data[a];
         let floor = surveydata[sfloor];
+		let date = surveydata[5];
+		dateMap.set(a, date);
         let surv_array = [];
 
         for(i in floor){
@@ -57,21 +77,42 @@ function display_multisurvey(data, sfloor, sfloorName){
 
             for(j in s_array){
                 //Check to see if furn exists in furnmap based on furn ID, if not create new element, if it does, add info to map
+				let total_occupants = 0;
 				if(furnMap.has(s_array[j].furn_id)){
 					let curfurn = furnMap.get(s_array[j].furn_id);
-					curfurn.sumOccupants += s_array[j].total_occupants;
-					curfurn.arrOccupants.push(s_array[j].total_occupants);
+					for(var k = 0; k < curfurn.seat_places.length; k++){
+
+						let seat = curfurn.seat_places[k];
+						if(seat.occupied === true){
+							total_occupants++;					
+						}
+					}
+					curfurn.sumOccupants += total_occupants;
+					let lastitem = curfurn.arrOccupants[curfurn.arrOccupants.length - 1]
+					curfurn.arrOccupants.push(total_occupants);
+					if(lastitem < total_occupants){
+						curfurn.peakuse = date;
+					}
+					
 				}
 				else{
 					let furn = new Furniture(s_array[j].furn_id, s_array[j].num_seats);
+					for(var k = 0; k < furn.seat_places.length; k++){
+
+						let seat = furn.seat_places[k];
+						if(seat.occupied === true){
+							total_occupants++;					
+						}
+					}
 					furn.x = s_array[j].x;
 					furn.y = s_array[j].y;
 					furn.ftype = s_array[j].ftype;
 					furn.seat_places = s_array[j].seat_places;
 					furn.degree_offset = s_array[j].degree_offset;
 					furn.area_id = s_array[j].area_id;
-					furn.sumOccupants = s_array[j].total_occupants;
-					furn.arrOccupants.push(s_array[j].total_occupants);
+					furn.sumOccupants = total_occupants;
+					furn.arrOccupants.push(total_occupants);
+					furn.peakuse = date;
 
 					furnMap.set(furn.furn_id, furn);
 				}
@@ -151,7 +192,6 @@ function display_multisurvey(data, sfloor, sfloorName){
 	}
 
 	calculateAreaData();
-	calculateAreaPeaks(data);
 	mymap.invalidateSize();
 }
 
@@ -171,24 +211,12 @@ function calculateAreaData(){
 		for(let[key2, value2] of furnMap){
 			var cur_furn = value2;
 			if(cur_furn != undefined){
-				//check if the furniture is in the current area we are collecting data on
 				if(cur_furn.area_id === cur_area.area_id && cur_furn.area_id != null){
 					area_furn_count++;
 					max_seats += parseInt(cur_furn.num_seats);
 					area_ratio_sum += parseFloat(cur_furn.avgUseRatio);
 					total_seats_used += parseInt(cur_furn.sumOccupants);
 				}
-				//check if a modified furniture exists for that furniture that is also within the current area
-				/*for(var k = 0; k < cur_furn.mod_array.length; k++){
-					var mod_furn = cur_furn.mod_array[k];
-					if(mod_furn[2] == cur_area.area_id){
-						var mod_occ = mod_furn[3];
-						var mod_seats = mod_furn[4];
-						total_seats_used += parseInt(mod_occ);
-						area_ratio_sum += parseFloat(mod_occ/mod_seats);
-						area_furn_count++;
-					}
-				}*/
 			}
 		}
 		//calculate area data based on now consolidated furniture data
@@ -201,13 +229,40 @@ function calculateAreaData(){
 		total_floor_vistors += cur_area.totalSeatsUsed;
 
 		//call fuunction to draw area's after
-		drawAreaMulti(cur_area).addTo(surveyAreaLayer);
+		calculateAreaPeaks(cur_area);
 
 	}
 }
 
-function calculateAreaPeaks(data){
+function calculateAreaPeaks(cur_area){
+	//for cur area, run through date map and calculate values for dates;
+	var datearr = 0;
+	for(let [key, value] of dateMap){
+		
+		for(let [key2, value2] of furnMap){
+			if(cur_area.area_id === value2.area_id){
+				let peak_furn_date = value.peakuse;
+				if(value === peak_furn_date){
+					datearr[key]++;
+				}
+			}
+			
+		}
+	}
 	
+
+	//find the peak date for the area
+	var peakdate = datearr[0];
+	for(let i = 1; i < datearr.length; i++){
+		if(datearr[i] > datearr[i - 1]){
+			peakdate = dateMap.get(i);
+		}
+	}
+
+
+	cur_area.peakDate = peakdate;
+
+	drawAreaMulti(cur_area).addTo(surveyAreaLayer);
 }
 
 function drawAreaMulti(area){
@@ -221,17 +276,18 @@ function drawAreaMulti(area){
 	popupString = "<strong>"+area.area_name +"</strong></br>Number of Seats: "
 		+ area.num_seats +"</br>Average Area Population: " + Math.round((area.avgPopArea) * 100)/100
 		+"</br>Percentage Use: "
-		+ Math.round(((area.avgPopArea/area.num_seats) * 100) * 100)/100
+		+ Math.round((area.avgPopArea/area.num_seats) * 100)
 		+ "%</br>Ratio of use over Period: "
-		+ Math.round((area.avgRatio * 100) * 100)/100 
+		+ Math.round(area.avgRatio) 
 		+ "%</br>Peak Population: "
 		+ area.peak
 		+ "</br>Peak Date: "
-		+ area.peakDate;
+		+ area.peakDate
+		+ "</br><hr>";
 
 	poly.bindPopup(popupString);
-
-	let area_string = "";
+	dataWindow.innerHTML += popupString;
+	let area_string = '';
 	if(area.num_seats != 0){
 		area_string += popupString + "</br></br>";
 	}
