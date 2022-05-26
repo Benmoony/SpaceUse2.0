@@ -81,9 +81,11 @@ ipcMain.on('toMain', function(event, sname){
   let f1 = {'Floor One': []};
   let f2 = {'Floor Two': []};
   let f3 = {'Floor Three': []};
+  let a = {'Areas': []};
   global.shared.surveyArray.push(f1);
   global.shared.surveyArray.push(f2);
   global.shared.surveyArray.push(f3);
+  global.shared.surveyArray.push(a);
   //Navigate to the homepage
   let date = new Date();
   let TimeStart = {'Time Start': date};
@@ -113,7 +115,6 @@ ipcMain.on('SaveFurniture', function(event, furnMap, sfloor){
 });
 
 ipcMain.on('LoadLayout',()=>{
-
   //Load File
   dialog.showOpenDialog({
     title: 'Select the Layout to be uploaded',
@@ -147,6 +148,7 @@ ipcMain.on('LoadLayout',()=>{
         console.log("Not A Layout");
         return;
       }
+      global.shared.surveyArray[4] = data[4];
       win.webContents.send('LoadLayoutSuccess', data);
       
     }  
@@ -197,12 +199,89 @@ ipcMain.on('LoadSurvey', ()=>{
 
 });
 
+ipcMain.on('LoadDirectory', ()=>{
+  dialog.showOpenDialog({
+    title: 'Select the Folder to be uploaded',
+    defaultPath: path.join(__dirname, './SavedSurveys/'),
+    buttonLabel: 'Upload',
+    // Restricting the user to only Text Files.
+    filters: [
+      {
+        name: 'Text Files',
+        extensions: ['json']
+      }, 
+    ],
+    // Specifying the File Selector Property
+    properties: ['openDirectory']
+  }).then(file => {
+    // Stating whether dialog operation was
+    // cancelled or not.
+    console.log(file.canceled);
+    if (!file.canceled) {
+      // Updating the GLOBAL filepath variable 
+      // to user-selected file.
+      var data = [];
+      for(let i = 0; i < file.filePaths.length; i++){
+        global.filepath = file.filePaths[i].toString();
+        let rawdata = fs.readFileSync(global.filepath);
+        let json = JSON.parse(rawdata);
+       
+        data.push(json);
+        
+      }
+
+      win.webContents.send('LoadDirectorySurveySuccess', data);
+
+    }  
+  }).catch(err => {
+    console.log(err)
+  });
+});
+
+ipcMain.on('LoadMultipleSurvey', ()=>{
+  dialog.showOpenDialog({
+    title: 'Select the Files to be uploaded',
+    defaultPath: path.join(__dirname, './SavedSurveys/'),
+    buttonLabel: 'Upload',
+    // Restricting the user to only Text Files.
+    filters: [
+      {
+        name: 'Text Files',
+        extensions: ['json']
+      }, 
+    ],
+    // Specifying the File Selector Property
+    properties: ['openFile', 'multiSelections']
+  }).then(file => {
+    // Stating whether dialog operation was
+    // cancelled or not.
+    console.log(file.canceled);
+    if (!file.canceled) {
+      // Updating the GLOBAL filepath variable 
+      // to user-selected file.
+      var data = [];
+      for(let i = 0; i < file.filePaths.length; i++){
+        global.filepath = file.filePaths[i].toString();
+        let rawdata = fs.readFileSync(global.filepath);
+        let json = JSON.parse(rawdata);
+       
+        data.push(json);
+        
+      }
+      
+      win.webContents.send('LoadMultiSurveySuccess', data);
+
+    } 
+  }).catch(err => {
+    console.log(err)
+  });   
+});
+
 
 ipcMain.on('SaveSurvey',()=>{
   let date = new Date();
   let TimeEnd = {'Time End': date};
   global.shared.surveyArray.push(TimeEnd);
-  var toCSV = [];
   var jsonObject = JSON.stringify(global.shared.surveyArray);
 
   let month = date.getUTCMonth() + 1;

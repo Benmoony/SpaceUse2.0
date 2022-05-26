@@ -1,9 +1,4 @@
-/* styles.css */
-/*@font-face {
-    font-family: "Source Serif 4";
-    src: url("https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;900&display=swap");
-}*/
-/* Add styles here to customize the appearance of your app */
+
 body{
     background-color: beige;
     margin: 0;
@@ -21,6 +16,14 @@ body{
     color: cornsilk;
 }
 
+#msurveySelect{
+    display: none;
+    padding: 1em;
+    background-color: coral;
+    height:fit-content;
+    color: cornsilk;
+}
+
 #floorSelect{
     display: none;
     padding: 1em;
@@ -33,6 +36,15 @@ body{
     display: none;
     padding: 1em;
     background-color: cornflowerblue;
+    height:fit-content;
+    color: cornsilk;
+
+}
+
+#msurveyFloorSelect{
+    display: none;
+    padding: 1em;
+    background-color: rgb(41, 137, 216);
     height:fit-content;
     color: cornsilk;
 
