@@ -224,6 +224,7 @@ function Furniture(fid, num_seats){
 	this.activities;
 	this.arrOccupants = [];
     this.peakuse;
+    this.peakPop = 0;
 }
 
 //Seat Obj
@@ -248,7 +249,7 @@ function Area(area_id, facilites_id, area_name){
     this.avgPopArea = 0;
 	this.avgRatio = 0;
 	this.totalSeatsUsed = 0;
-	this.peak = 0;
+	this.peakPop = 0;
 	this.peakSurvey = 0;
 	this.peakDate = 0;
 }

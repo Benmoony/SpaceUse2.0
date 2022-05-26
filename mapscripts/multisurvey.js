@@ -92,6 +92,7 @@ function display_multisurvey(data, sfloor, sfloorName){
 					curfurn.arrOccupants.push(total_occupants);
 					if(lastitem < total_occupants){
 						curfurn.peakuse = date;
+						curfurn.peakPop = total_occupants;
 					}
 					
 				}
@@ -122,7 +123,7 @@ function display_multisurvey(data, sfloor, sfloorName){
     }
 
 	for(let[key, value] of furnMap){
-		let arr = value.arrOccupants;
+		let arr = value.arrOccupants; 
 		let sum = 0;
 		for(let i = 0; i < arr.length; i++){
 			sum += arr[i];
@@ -236,14 +237,15 @@ function calculateAreaData(){
 
 function calculateAreaPeaks(cur_area){
 	//for cur area, run through date map and calculate values for dates;
-	var datearr = 0;
+	var datearr = [];
 	for(let [key, value] of dateMap){
-		
+		let date = value['Time Start']
+		datearr[key] = 0;
 		for(let [key2, value2] of furnMap){
 			if(cur_area.area_id === value2.area_id){
-				let peak_furn_date = value.peakuse;
-				if(value === peak_furn_date){
-					datearr[key]++;
+				let peak_furn_date = value2.peakuse['Time Start'];
+				if(date === peak_furn_date){
+					datearr[key] = datearr[key] + value2.peakPop;	
 				}
 			}
 			
@@ -252,12 +254,19 @@ function calculateAreaPeaks(cur_area){
 	
 
 	//find the peak date for the area
-	var peakdate = datearr[0];
-	for(let i = 1; i < datearr.length; i++){
-		if(datearr[i] > datearr[i - 1]){
-			peakdate = dateMap.get(i);
+	var peakdate = dateMap.get('0')['Time Start'];
+	cur_area.peakPop = datearr[0];
+	
+	if(datearr.length > 1){
+		for(let z = 1; z < datearr.length; z++){
+			if(datearr[z] > datearr[z - 1]){
+				let key = z.toString();
+				peakdate = dateMap.get(key)['Time Start'];
+				cur_area.peakPop = datearr[z];
+			}
 		}
 	}
+	
 
 
 	cur_area.peakDate = peakdate;
@@ -280,7 +289,7 @@ function drawAreaMulti(area){
 		+ "%</br>Ratio of use over Period: "
 		+ Math.round(area.avgRatio) 
 		+ "%</br>Peak Population: "
-		+ area.peak
+		+ area.peakPop
 		+ "</br>Peak Date: "
 		+ area.peakDate
 		+ "</br><hr>";
