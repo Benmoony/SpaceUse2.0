@@ -56,6 +56,7 @@ backBtn.addEventListener('click',()=>{
     multimenu.style.display = "none";
     surveyBtn.disabled = false;
     loadSurvey.disabled = false;
+    showMultiSurvey.disabled = false;
     getNameForm.style.display = "block";
     document.getElementById("surveyData").style.display = "none";
     isSurvey = false;
@@ -78,11 +79,14 @@ ipcRenderer.on('LoadSurveySuccess', function(event, data){
     //process Survey data here from csv to JSON
     surveyFloorSelect.style.display = "block";
     surveyBtn.disabled = true;
+    showMultiSurvey.disabled = true;
+
 });
 
 //Render Functions for Multi Survey
 showMultiSurvey.addEventListener('click',()=>{
     surveyBtn.disabled = true;
+
     multimenu.style.display = "block";
 });
 
@@ -101,6 +105,7 @@ dsurvey.addEventListener('click', ()=>{
 ipcRenderer.on('LoadDirectorySurveySuccess', function(event, data){
     global.survey = data;
     surveyBtn.disabled = true;
+    loadSurvey.disabled = true;
     msurveyFloorSelect.style.display = "block";
     
 });
@@ -108,6 +113,7 @@ ipcRenderer.on('LoadDirectorySurveySuccess', function(event, data){
 ipcRenderer.on('LoadMultiSurveySuccess', function(event, data){
     global.survey = data;
     surveyBtn.disabled = true;
+    loadSurvey.disabled = true;
     msurveyFloorSelect.style.display = "block";
 });
 
@@ -118,6 +124,7 @@ ipcRenderer.on('LoadLayoutSuccess', function(event, data){
     //process layout data here from csv to JSON
     floorSelect.style.display = "block";
     loadSurvey.disabled = true;
+    showMultiSurvey.disabled = true;
 });
 
 //Disable Submit Survey Button by Default.
@@ -141,6 +148,7 @@ ipcRenderer.on('SaveSuccess', ()=>{
     getNameForm.style.display = "block";
     loadSurvey.disabled = false;
     surveyBtn.disabled = false;
+    showMultiSurvey.disabled = false;
     isMulti = false;
     isSurvey = false;
 });

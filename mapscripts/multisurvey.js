@@ -6,7 +6,7 @@ var surveyPopDim =
     'maxHeight': '300'
 }
 
-const threshold = .2;
+const threshold = 20;
 var num_surveys = 0;
 var total_floor_vistors = 0;
 var dateMap = new Map();
@@ -286,8 +286,9 @@ function drawAreaMulti(area){
 		+ area.num_seats +"</br>Average Area Population: " + Math.round((area.avgPopArea) * 100)/100
 		+"</br>Percentage Use: "
 		+ Math.round((area.avgPopArea/area.num_seats) * 100)
-		+ "%</br>Ratio of use over Period: "
-		+ Math.round(area.avgRatio) 
+		//Need to properly calculate this fact
+		/*+ "%</br>Ratio of use over Period: "
+		+ Math.round(area.avgRatio) */
 		+ "%</br>Peak Population: "
 		+ area.peakPop
 		+ "</br>Peak Date: "
