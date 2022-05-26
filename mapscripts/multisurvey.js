@@ -14,7 +14,6 @@ var dataWindow = document.getElementById('surveyData');
 
 function display_multisurvey(data, sfloor, sfloorName){
 
-	areaMap.clear();
 	if(mymap.hasLayer(surveyLayer)){
         mymap.removeLayer(surveyLayer);
         mymap.removeLayer(surveyAreaLayer);
@@ -22,7 +21,6 @@ function display_multisurvey(data, sfloor, sfloorName){
         surveyAreaLayer = new L.layerGroup().addTo(mymap);
     }
 
-	furnMap.clear();
     let surveyareadata = data[0][4][1][sfloorName];
 	total_floor_vistors = 0;
 
@@ -47,8 +45,10 @@ function display_multisurvey(data, sfloor, sfloorName){
         
     }
 
+	//Change this to calculate this by computing array of dates and chosing the earliest and latest
 	let timestart = data[0][5]['Time Start'];
 	let timeend = data[data.length - 1][6]['Time End'];
+
 	dataWindow.style.display = "block";
 	let datastring = "<strong>Survey Number: </strong>"
     + data.length
@@ -90,7 +90,7 @@ function display_multisurvey(data, sfloor, sfloorName){
 					curfurn.sumOccupants += total_occupants;
 					let lastitem = curfurn.arrOccupants[curfurn.arrOccupants.length - 1]
 					curfurn.arrOccupants.push(total_occupants);
-					if(lastitem < total_occupants){
+					if(lastitem <= total_occupants){
 						curfurn.peakuse = date;
 						curfurn.peakPop = total_occupants;
 					}
@@ -128,8 +128,9 @@ function display_multisurvey(data, sfloor, sfloorName){
 		for(let i = 0; i < arr.length; i++){
 			sum += arr[i];
 		}
+		let ratio = sum / arr.length
 		value.avgOccupancy = sum / arr.length;
-		value.avgUseRatio = (sum / arr.length) * 100;
+		value.avgUseRatio = (ratio / arr.length) * 100;
 
 		var furn_id = value.furn_id;
 

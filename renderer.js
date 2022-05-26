@@ -34,6 +34,7 @@ const msurvey = document.getElementById('msurvey');
 const dsurvey = document.getElementById('dsurvey');
 
 
+
 //Process Surveyors Name
 getNameForm.addEventListener('submit', function (event){
     event.preventDefault() // stop the form from submitting
@@ -86,7 +87,7 @@ ipcRenderer.on('LoadSurveySuccess', function(event, data){
 //Render Functions for Multi Survey
 showMultiSurvey.addEventListener('click',()=>{
     surveyBtn.disabled = true;
-
+    dsurvey.disabled = true;
     multimenu.style.display = "block";
 });
 

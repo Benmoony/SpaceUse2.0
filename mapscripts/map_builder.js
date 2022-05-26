@@ -520,6 +520,11 @@ function addMapPic(){
         //Prebuild Layout in CSV File to JSON
         //TODO: implement Layout
         if(isMulti === true){
+            
+            areaMap.clear();
+            furnMap.clear();
+            dateMap.clear();
+            
             display_multisurvey(global.survey, sfloor, sfloorName);
         } 
         else if(isSurvey === true){
