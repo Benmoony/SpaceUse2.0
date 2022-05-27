@@ -105,6 +105,9 @@ function display_multisurvey(data, sfloor, sfloorName){
 							total_occupants++;					
 						}
 					}
+
+					//TODO:: Need to save array of activities and average activities for each furniture
+					//iterate through activity map
 					furn.x = s_array[j].x;
 					furn.y = s_array[j].y;
 					furn.ftype = s_array[j].ftype;
@@ -123,6 +126,9 @@ function display_multisurvey(data, sfloor, sfloorName){
     }
 
 	for(let[key, value] of furnMap){
+
+	
+
 		let arr = value.arrOccupants; 
 		let sum = 0;
 		for(let i = 0; i < arr.length; i++){
@@ -287,7 +293,7 @@ function drawAreaMulti(area){
 		+ area.num_seats +"</br>Average Area Population: " + Math.round((area.avgPopArea) * 100)/100
 		+"</br>Percentage Use: "
 		+ Math.round((area.avgPopArea/area.num_seats) * 100)
-		//Need to properly calculate this fact
+		//Need to properly calculate this
 		/*+ "%</br>Ratio of use over Period: "
 		+ Math.round(area.avgRatio) */
 		+ "%</br>Peak Population: "
