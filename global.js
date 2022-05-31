@@ -3,7 +3,8 @@
 global.shared = {
     surveyArray: [],
     layout: [],
-    survey: []
+    survey: [],
+    createLayout: []
 }
 
 module.exports = global;

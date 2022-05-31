@@ -39,16 +39,18 @@
       <button id="surveyBtn">Survey</button>
       <button id="loadSurveyBtn">Load a Survey</button>
       <button id="loadMultipleSurvey">Survey Analysis</button>
+      <button id="layoutBuilder">Layout Builder</button>
     </div>
 
 
     <!-- Load MultiSurveySelector Here-->
     <div id="msurveySelect">
       <button id="msurvey">Choose Multiple</button>
+      <!--Button Disabled, not implemented-->
       <button id="dsurvey">Choose Folder</button>
     </div>
 
-    <!-- Floor Selector-->
+    <!-- FLOOR MENU FOR SURVEY-->
     <!-- This will enable the surveyor to select the floor-->
     <div id="floorSelect">
         <select name="floors" id="floor">
@@ -60,6 +62,8 @@
         <button id="saveFloor">Save Floor</button>
         <button id="saveSurvey"> Submit Survery</button>
     </div>
+    
+    <!--FLOOR MENU FOR SURVEY VIEW-->
     <div id="surveyFloorSelect">
       <select name="floors" id="sfloor">
         <option value="1">Floor 1</option>
@@ -68,6 +72,8 @@
       </select>
       <button id="subsurveyFloor">Choose Floor</button>
     </div>
+
+    <!--ANALYSIS MENU-->
     <div id="msurveyFloorSelect">
       <select name="floors" id="msfloor">
         <option value="1">Floor 1</option>
@@ -75,6 +81,48 @@
         <option value="3">Floor 3</option>
       </select>
       <button id="msubsurveyFloor">Choose Floor</button>
+    </div>
+
+    <!--LAYOUT MENU-->
+    <div id="LayoutMenu">
+      <!--get Image for Layout-->
+      <button id="getImage">Upload Floorplan</button>
+      <!--Select Furniture to be placed-->
+      <select name="floors" id="layfloor">
+        <option value="1">Floor 1</option>
+        <option value="2">Floor 2</option>
+        <option value="3">Floor 3</option>
+      </select>
+      <!--Make this Dynamic IN Future as a select with ICONS -->
+      <select name="furniture-select" id="furn_icons">
+        <option value="4">Rectangle Table </option>
+        <option value="5">Long Rectangle Table </option>
+        <option value="6">Curved Counter </option>
+        <option value="9">Small Circular Table</option>
+        <option value="10">Circular Table</option>
+        <option value="11">Curved Couch</option>
+        <option value="12">Couch Two</option>
+        <option value="13">Couch Three</option>
+        <option value="14">Couch Four</option>
+        <option value="15">Couch Six</option>
+        <option value="16">Large Computer Station</option>
+        <option value="19">Collaboration Station</option>
+        <option value="21">Computer Station</option>
+        <option value="22">Seat One</option>
+        <option value="23">Seat One Soft</option>
+        <option value="24">Fit Desk</option>
+        <option value="25">Med Corner</option>
+        <option value="26">Microfilm Reader</option>
+        <option value="27">Study One</option>
+        <option value="28">Study Two</option>
+        <option value="29">Study Three</option>
+        <option value="30">Study Four</option>
+        <option value="31">Video Viewer</option>
+      </select>
+      <button id="drawArea">Draw Area</button>
+      <button id="saveLayFloor">Save Floor</button>
+      <button id="saveLayout">Save Layout</button>
+              
     </div>
 
     <!-- Survey Interface Load In Here-->
@@ -99,17 +147,6 @@
         </div>
       
     </div>
-    
-
-    <!-- Process CSV and Download-->
-    <!-- UI elements for CSV file conversion processing and download-->
-    <!-- Ask where to save -->
-    
-    <!--Load CSV File and View indivdual Survey-->
-
-
-    <!--Load CSV File Folder and View Multiple Survey's-->
-
 
     <!-- You can also require other files to run in this process -->
     <!-- Require Javascript files here to be run alongside render process for processing data being added to global survey object-->
@@ -119,6 +156,7 @@
     <script src="mapscripts/makerinPoly.js"></script>
     <script src="mapscripts/make_popup.js"></script>
     <script src="mapscripts/multisurvey.js"></script>
+    <script src="mapscripts/layout_builder.js"></script>
     <script src="mapscripts/popup_helpers.js"></script>
     <script src="mapscripts/leaflet.rotatedMarker.js"></script>
   </body>

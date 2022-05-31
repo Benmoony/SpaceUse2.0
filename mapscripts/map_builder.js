@@ -12,6 +12,7 @@ var imagepath = "";
 var sfloor = "";
 var isSurvey = false;
 var isMulti = false;
+var isLayoutEdit = false;
 var selected_furn;
 var selected_marker;
 var seat_num;
@@ -36,6 +37,7 @@ var temp_seat_places = [];
 const floorBtn = document.getElementById('submitFloor');
 const surveyfloorBtn = document.getElementById('subsurveyFloor');
 const msurveyfloorBtn = document.getElementById('msubsurveyFloor');
+const layoutfloorBtn = document.getElementById('LayoutMenu');
 
 //Add Floor to Global JSON
 floorBtn.addEventListener('click', function (event){
@@ -43,6 +45,7 @@ floorBtn.addEventListener('click', function (event){
     sfloor = document.getElementById("floor").value;
     isSurvey = false;
     isMulti = false;
+    isLayoutEdit = false;
     mapView.style.display = "block";
     addMapPic();
     //Add Furniture After Adding Items
@@ -52,6 +55,7 @@ surveyfloorBtn.addEventListener('click', function (event){
     event.preventDefault()
     isSurvey = true;
     isMulti = false;
+    isLayoutEdit = false;
     sfloor = document.getElementById("sfloor").value;
     mapView.style.display = "block";
     addMapPic();
@@ -64,6 +68,17 @@ msurveyfloorBtn.addEventListener('click', function (event){
     sfloor = document.getElementById('msfloor').value;
     isMulti = true;
     isSurvey = false;
+    isLayoutEdit = false;
+    addMapPic();
+});
+
+layoutfloorBtn.addEventListener('click', function(event){
+    event.preventDefault();
+    mapView.style.display = "block";
+    sfloor = document.getElementById('layfloor').value;
+    isLayoutEdit = true;
+    isSurvey = false;
+    isMulti = false;
     addMapPic();
 });
 
@@ -158,12 +173,6 @@ activityMap.set(2, "Entertainment");
 wb_activityMap.set(0, "Partition");
 wb_activityMap.set(1, "Writing");
 
-//Max Interactible Boundaries
-var latMax = 359.75;
-var latMin = -0.5;
-var longMax = 508.18;
-var longMin = 42.18;
-
 //container for furniture objects
 var furnMap = new Map();
 var mapKey = 0;
@@ -191,12 +200,39 @@ var marker = L.Marker.extend({
 	}
 });
 
-//for testing and finding furniture locations
+//Create the boundries for placing furniture
+var latMax = 359.75;
+var latMin = -0.5;
+var longMax = 508.18;
+var longMin = 42.18;
+
+
+//Proccesses clicking the map
 mymap.on('click', function(e){
     var coord = e.latlng;
     var lat = coord.lat;
     var lng = coord.lng;
     console.log("You clicked the map at latitude: " + lat + " and longitude: " + lng);
+
+    if(isLayoutEdit === true){
+        let outBounds = false;
+        if(lat > latMax || lat < latMin || lng > longMax || lng < longMin){
+            alert("Please place the furniture inside the map");
+            outBounds = true;
+        }
+
+        //check if area was clicked out of bounds
+        if(outBounds === false){
+            //get the furniture select element
+            furn = document.getElementById("furn_icons");
+            //get the type id from the value
+            ftype = furn.value;
+            //convert the string furniture type into an int to send to getIconObj(int ftype)
+            ftype = parseInt(ftype);
+
+            createFurnObj(ftype, lat, lng, coord);
+        }
+    }
 });
 
 //create a container for areas
@@ -453,13 +489,6 @@ function display_survey(surveyArray){
     mymap.invalidateSize();
 }
 
-
-
-//TODO Get popup properly filling with data
-function surveyClick(e){
-    let seats = this.options.seats;
-}
-
 //Add Image of Map to div
 function addMapPic(){
     //remove old floor imagepath and place newly selected floor imagepath
@@ -492,6 +521,8 @@ function addMapPic(){
         surveyAreaLayer = new L.layerGroup().addTo(mymap);
     }
 
+
+    //TODO:: Eventually replace this code with a dynamic file picker
     sfloor = parseInt(sfloor);
     let sfloorName = "";
     switch(sfloor){
@@ -517,8 +548,6 @@ function addMapPic(){
         image.addTo(mymap);
 
         //load furniture after image depending on selected layout.
-        //Prebuild Layout in CSV File to JSON
-        //TODO: implement Layout
         if(isMulti === true){
             
             areaMap.clear();
@@ -573,6 +602,12 @@ function addMapPic(){
             }
 
             display_survey(surv_array);
+        }
+        else if(isLayoutEdit === true){
+            areaMap.clear();
+            furnMap.clear();
+            mymap.invalidateSize();
+
         }
         else{
             let floordata = global.layout[sfloor][1];

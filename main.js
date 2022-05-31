@@ -95,6 +95,9 @@ ipcMain.on('toMain', function(event, sname){
 
 ipcMain.on('back-to-previous',()=>{
   global.shared.surveyArray.length = 0;
+  global.shared.layout.length = 0;
+  global.shared.survey.length = 0;
+  global.shared.createLayout.length = 0;
   console.log("Memory Cleared, type name again");
 });
 
@@ -112,6 +115,29 @@ ipcMain.on('SaveFurniture', function(event, furnMap, sfloor){
   let floorFurn = mapToObj(furnMap);
 
   global.shared.surveyArray[sfloor][curfloor] = floorFurn;
+});
+
+ipcMain.on('layoutCreate'){
+  global.shared.createLayout[0] = "true";
+
+};
+
+ipcMain.on('SaveLayoutFloor', function(event, furnMap, sfloor){
+  console.log("Saving Furn Map on floor: " + sfloor);
+  var curfloor = "";
+
+  switch(sfloor){
+    case 1: curfloor = "Floor 1"; break;
+    case 2: curfloor = "Floor 2"; break;
+    case 3: curfloor = "Floor 3"; break;
+  }
+  //get floor data from furn map
+  let floorstring = "";
+  for(let [key, value] of furnMap){
+    
+  }
+
+  global.shared.createLayout[sfloor] = floorstring;
 });
 
 ipcMain.on('LoadLayout',()=>{
