@@ -37,7 +37,7 @@ var temp_seat_places = [];
 const floorBtn = document.getElementById('submitFloor');
 const surveyfloorBtn = document.getElementById('subsurveyFloor');
 const msurveyfloorBtn = document.getElementById('msubsurveyFloor');
-const layoutfloorBtn = document.getElementById('LayoutMenu');
+const layoutfloorBtn = document.getElementById('layfloor');
 
 //Add Floor to Global JSON
 floorBtn.addEventListener('click', function (event){

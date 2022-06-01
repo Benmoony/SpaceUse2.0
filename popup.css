@@ -7,6 +7,16 @@
     height:40em;
 }
 
+#laypopup{
+    height: 10em;
+}
+
+#laypopup > *{
+    margin-top: 1em;
+    margin-bottom: 1em;
+    display: inline-block;
+}
+
 #surveyData{
     display: none;
     position: absolute;

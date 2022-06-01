@@ -117,10 +117,10 @@ ipcMain.on('SaveFurniture', function(event, furnMap, sfloor){
   global.shared.surveyArray[sfloor][curfloor] = floorFurn;
 });
 
-ipcMain.on('layoutCreate'){
+ipcMain.on('layoutCreate', function(event){
   global.shared.createLayout[0] = "true";
 
-};
+});
 
 ipcMain.on('SaveLayoutFloor', function(event, furnMap, sfloor){
   console.log("Saving Furn Map on floor: " + sfloor);
@@ -134,7 +134,7 @@ ipcMain.on('SaveLayoutFloor', function(event, furnMap, sfloor){
   //get floor data from furn map
   let floorstring = "";
   for(let [key, value] of furnMap){
-    
+
   }
 
   global.shared.createLayout[sfloor] = floorstring;

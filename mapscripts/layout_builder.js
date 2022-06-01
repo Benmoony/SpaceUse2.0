@@ -121,7 +121,7 @@ function markerLayClick(e){
     if(document.getElementById("nameDiv") == null){
         var nameDiv = document.createElement("div");
         nameDiv.id = "nameDiv";
-        document.getElementById("popup").appendChild(nameDiv);
+        document.getElementById("laypopup").appendChild(nameDiv);
     }
     //set the nameDiv to the name of the current furniture
     var nameDiv = document.getElementById("nameDiv");
@@ -132,7 +132,7 @@ function markerLayClick(e){
         var deleteButtonDiv = document.createElement("div");
         deleteButtonDiv.id = "deleteButtonDiv";
         //attach deleteButton div to popup
-        document.getElementById("popup").appendChild(deleteButtonDiv);
+        document.getElementById("laypopup").appendChild(deleteButtonDiv);
         //create delete button
         var deleteMarkerButton = document.createElement("BUTTON");
         deleteMarkerButton.id = "deleteMarkerButton";
@@ -149,15 +149,18 @@ function markerLayClick(e){
         var rotateDiv = document.createElement("div");
         rotateDiv.id = "rotateDiv";
         //attach the rotatebutton div to the popup
-        document.getElementById("popup").appendChild(rotateDiv);
+        document.getElementById("laypopup").appendChild(rotateDiv);
         rotateHelper("rotateDiv");
     }
 
     if(document.getElementById("seataddDiv") == null){
         var seataddDiv = document.createElement("div");
         seataddDiv.id = "seataddDiv";
-        document.getElementById("popup").appendChild(seataddDiv);
-        seatAddHelper("seataddDiv");
+        let popup = document.getElementById("laypopup");
+        popup.appendChild(seataddDiv);
+        seatAddHelper();
+        //Seat adding function broken, default seats to 2 for every furniture
+        //seatAddHelper("seataddDiv");
     }
 }
 
@@ -173,21 +176,22 @@ function createFurnObj(ftype, lat, lng, coord){
     newFurn.ftype = ftype;
     newFurn.x = lng;
     newFurn.y = lat;
+    newFurn.degreeOffset = 0;
     console.log(newFurn);
 
     furnMap.set(mapKey, newFurn);
 
-    if(document.getElementById("popup") == null){
+    if(document.getElementById("laypopup") == null){
             popupDiv = document.createElement("DIV");
-            popupDiv.id = "popup";
+            popupDiv.id = "laypopup";
             document.getElementById("popupHolder").appendChild(popupDiv);
     }
 
-    var popup = document.getElementById("popup");
-    var popupDim =
+    var popup = document.getElementById("laypopup");
+    var laypopupDim =
     {
         'minWidth': '200',
-        'minHeight': '200'
+        'minHeight': '400'
     };//This is the dimensions for the popup
 
     marker = L.marker(coord, {
@@ -195,7 +199,7 @@ function createFurnObj(ftype, lat, lng, coord){
             icon: selectedIcon,
             rotationAngle: 0,
             draggable: true
-    }).addTo(furnitureLayer).bindPopup(popup,popupDim);
+    }).addTo(furnitureLayer).bindPopup(laypopup, laypopupDim);
     //give it an onclick function
     marker.on('click', markerLayClick);
 
@@ -205,7 +209,7 @@ function createFurnObj(ftype, lat, lng, coord){
     });
     marker.on('dragstart', function(e) {
         console.log('marker dragstart event');
-        mymap.off('click', onMapClick);
+        mymap.off('click', markerLayClick);
     });
     marker.on('dragend', function(e) {
         //update latlng for insert string
@@ -222,7 +226,7 @@ function createFurnObj(ftype, lat, lng, coord){
         console.log('marker dragend event');
 
         setTimeout(function() {
-            mymap.on('click', onMapClick);
+            mymap.on('click', markerLayClick);
         }, 10);
     });
 }
@@ -234,14 +238,23 @@ function deleteHelper()
 	furnMap.delete(selected_furn.furn_id);
 }
 
-function seatAddHelper(parentDiv){
+function seatAddHelper(){
 
-    var minusButton = document.createElement('minusbutton');
-    var addButton = document.createElement('button');
-    var seatTracker = document.createElement('p');
+    let parentDiv = "seataddDiv";
     
+    var seatTracker = document.createElement('input');
+    seatTracker.type = "number";
+    seatTracker.id = "seatTracker";
+    seatTracker.max = "10";
+    seatTracker.min = "0";
+    seatTracker.value = selected_furn.num_seat;
 
-    selected_marker.options.num_seat = seats;
+    document.getElementById(parentDiv).appendChild(seatTracker);
+
+    seatTracker.oninput = function(){
+        selected_furn.num_seat = seatTracker.value;
+    }
+
 }
 
 //Rotation Functionality
