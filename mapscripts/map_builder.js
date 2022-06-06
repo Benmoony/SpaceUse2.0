@@ -222,6 +222,9 @@ var latMin = -0.5;
 var longMax = 508.18;
 var longMin = 42.18;
 
+function surveyClick(e){
+    let seats = this.options.seats;
+}
 
 //Proccesses clicking the map
 mymap.on('click', function(e){
