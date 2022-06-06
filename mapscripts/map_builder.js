@@ -250,7 +250,9 @@ mymap.on('click', function(e){
         }
 
         if(drawing === true){
-            //Create Polygon
+            //Create Polygon for area's here;
+
+            
         }
     }
 });
@@ -630,6 +632,8 @@ function addMapPic(){
         else if(isLayoutEdit === true){
             areaMap.clear();
             furnMap.clear();
+            mymap.removeLayer(drawnItems);
+            drawnItems = new L.layerGroup().addTo(mymap);
             mymap.invalidateSize();
 
         }
