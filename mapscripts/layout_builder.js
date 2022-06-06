@@ -1,5 +1,4 @@
-//need for map
-var drawnItems = new L.FeatureGroup();
+
 
 //setup global variables for map builder
 var selected_marker;
@@ -14,7 +13,7 @@ var ftype;
 var coord;
 var lat;
 var lng;
-var cur_floor_id;
+var drawing = false;
 
 //floor image placed from dropdown selection
 var image;
@@ -23,95 +22,18 @@ var image;
 var roomName = "";
 var roomId = "";
 
-//get areas and place over map
-/*var getAreas = document.getElementById("getAreas");
-getAreas.onclick = function(){
-    //get areas for this floor
-    //check if the areaMap has been populated already
-    //create areas if the map is empty
-    if(!mapPopulated){
-        var cur_layout_id;
-        $.ajax({
-            url:'phpcalls/get-layout-id-from-floor.php',
-            type: 'get',
-            async: false,
-            data:{ 'floor_ID': floor_id_selection },
-            success: function(data){
-                var json_object = JSON.parse(data);
-                cur_layout_id = json_object[0];
-
-            }
-        })
+function areaMaker(e){
+    if(drawing === false){
+        //Turn on Drawing UI
+        drawing = true;
         
-        //createAreas(cur_layout_id);
-        //getAreas.innerHTML = "Remove Areas";
-        mapPopulated = true;
 
     }
-
-    else{
-        mymap.removeLayer(areaLayer);
-        areaLayer = L.layerGroup().addTo(mymap);
-        mapPopulated = false;
-        //getAreas.innerHTML = "Generate Areas";
-        //insertLayout.style.display = "none";
+    else if(drawing === true){
+        //Turn off Drawing UI
+        drawing = false;
     }
-}*/
-
-//Make sure all pieces of furniture are in areas before inserting a new layout.
-//var insertLayout = document.getElementById("insertLayout");
-/*insertLayout.onclick = function(){
-    var layoutReady = true;
-    var outOfBoundsLatLng = [];
-    var roomCheck;
-    //calculate the area each piece of furniture is in.
-    furnMap.forEach(function(value, key, map){
-        //get the x,y for each piece of furniture
-        y = value.y;
-        x = value.x;
-        roomCheck = value.ftype;
-        area_id="TBD";
-
-        areaMap.forEach(function(jtem, key, mapObj){
-            //check if x,y are in a polygon
-            if(isMarkerInsidePolygon(y,x, jtem.polyArea)){
-                area_id = jtem.area_id;
-            }
-        });
-
-        if(area_id !== "TBD"){
-            value.inArea = area_id;
-        }
-        else {
-            if(roomCheck != 20){
-                layoutReady = false;
-                outOfBoundsLatLng = [y,x];
-            }
-
-            if(roomCheck == 20){
-                cur_room_id = value.roomId;
-                $.ajax({
-                    url: 'phpcalls/check-room.php',
-                    type: 'get',
-                    async: false,
-                    data:{ 'roomId': cur_room_id },
-                    success: function(data){
-                        var json_object = JSON.parse(data);
-                        if(json_object.length == 0){
-                            value.inArea = 0;
-                        }
-                        else{
-                            get_area_id = json_object[0];
-                            value.inArea = get_area_id[0];
-                        }
-                        
-                    }
-                });
-            }
-        }
-    });
-}*/
-
+}
 
 function markerLayClick(e){
     //when a marker is clicked, it should be rotatable, and delete able
@@ -158,10 +80,12 @@ function markerLayClick(e){
         seataddDiv.id = "seataddDiv";
         let popup = document.getElementById("laypopup");
         popup.appendChild(seataddDiv);
-        seatAddHelper();
+        
         //Seat adding function broken, default seats to 2 for every furniture
         //seatAddHelper("seataddDiv");
+        
     }
+    seatAddHelper(selected_furn);
 }
 
 function createFurnObj(ftype, lat, lng, coord){
@@ -238,21 +162,25 @@ function deleteHelper()
 	furnMap.delete(selected_furn.furn_id);
 }
 
-function seatAddHelper(){
+function seatAddHelper(thisFurn){
 
-    let parentDiv = "seataddDiv";
+    if(document.getElementById("seatTracker") != null){
+        document.getElementById("seatTracker").remove();
+    }
     
+    let parentDiv = "seataddDiv";
+
     var seatTracker = document.createElement('input');
     seatTracker.type = "number";
     seatTracker.id = "seatTracker";
     seatTracker.max = "10";
     seatTracker.min = "0";
-    seatTracker.value = selected_furn.num_seat;
+    seatTracker.value = thisFurn.num_seats;
 
     document.getElementById(parentDiv).appendChild(seatTracker);
 
     seatTracker.oninput = function(){
-        selected_furn.num_seat = seatTracker.value;
+        selected_furn.num_seats = seatTracker.value;
     }
 
 }
