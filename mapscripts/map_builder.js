@@ -38,6 +38,9 @@ const floorBtn = document.getElementById('submitFloor');
 const surveyfloorBtn = document.getElementById('subsurveyFloor');
 const msurveyfloorBtn = document.getElementById('msubsurveyFloor');
 const layoutfloorBtn = document.getElementById('layfloor');
+const layoutDrawBtn = document.getElementById('drawArea');
+const layoutSaveFloor = document.getElementById('saveLayFloor');
+const layoutSaveLay = document.getElementById('saveLayout');
 
 //Add Floor to Global JSON
 floorBtn.addEventListener('click', function (event){
@@ -80,6 +83,18 @@ layoutfloorBtn.addEventListener('click', function(event){
     isSurvey = false;
     isMulti = false;
     addMapPic();
+});
+
+layoutDrawBtn.addEventListener('click', function(event){
+    event.preventDefault();
+    var backcolor = layoutDrawBtn.style.backgroundColor;
+
+    if(backcolor !== 'green'){
+        layoutDrawBtn.style.backgroundColor = 'green';
+    } else {
+        layoutDrawBtn.style.backgroundColor = 'salmon';
+    }
+    areaMaker();
 });
 
 function reinializePop(){
@@ -154,8 +169,9 @@ var furnitureLayer = new L.layerGroup().addTo(mymap);
 var surveyLayer = new L.layerGroup().addTo(mymap);
 var surveyAreaLayer = new L.layerGroup().addTo(mymap);
 var areaLayer = L.layerGroup().addTo(mymap);
-var drawnItems = new L.FeatureGroup();
+var drawnItems = new L.FeatureGroup().addTo(mymap);
 var bounds = [[0,0], [360,550]];
+
 mymap.fitBounds(bounds);
 
 //map image
@@ -222,7 +238,7 @@ mymap.on('click', function(e){
         }
 
         //check if area was clicked out of bounds
-        if(outBounds === false){
+        if(outBounds === false && drawing === false){
             //get the furniture select element
             furn = document.getElementById("furn_icons");
             //get the type id from the value
@@ -231,6 +247,10 @@ mymap.on('click', function(e){
             ftype = parseInt(ftype);
 
             createFurnObj(ftype, lat, lng, coord);
+        }
+
+        if(drawing === true){
+            //Create Polygon
         }
     }
 });
@@ -500,8 +520,10 @@ function addMapPic(){
     if(mymap.hasLayer(furnitureLayer)){
         mymap.removeLayer(furnitureLayer);
         mymap.removeLayer(areaLayer);
+       
         furnitureLayer = new L.layerGroup().addTo(mymap);
         areaLayer = new L.layerGroup().addTo(mymap);
+        
 
         if(document.getElementById("popup") === null){
             reinializePop();
@@ -517,8 +539,10 @@ function addMapPic(){
     if(mymap.hasLayer(surveyLayer)){
         mymap.removeLayer(surveyLayer);
         mymap.removeLayer(surveyAreaLayer);
+     
         surveyLayer = new L.layerGroup().addTo(mymap);
         surveyAreaLayer = new L.layerGroup().addTo(mymap);
+        
     }
 
 
