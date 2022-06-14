@@ -88,6 +88,38 @@ function markerLayClick(e){
     seatAddHelper(selected_furn);
 }
 
+function addAreas(areadata){
+    //Add Areas to AreaMap
+    //let areadata = global.shared.areadata['Areas'][sfloor];
+    var curfloor = '';
+    switch(sfloor){
+        case 1: curfloor = "Floor 1"; break;
+        case 2: curfloor = "Floor 2"; break;
+        case 3: curfloor = "Floor 3"; break;
+      }
+    
+    let areafloor = areadata.Areas[curfloor];
+    for(i in areafloor){
+        let cur_area_data = areafloor[i];
+        let new_area = new Area(i, cur_area_data["facilities_id"], cur_area_data["name"]);
+        let points = areafloor[i].points;
+        for(j in points){
+            curpoint = points[j];
+            let x = curpoint.v_x;
+            let y = curpoint.v_y;
+            var newVert = new AreaVertices(x, y);
+            new_area.area_vertices.push(newVert);
+        }
+
+        var polyItem = drawArea(new_area);
+        new_area.polyArea = polyItem;
+        areaMap.set(i, new_area);
+        polyItem.addTo(areaLayer);
+        
+    }
+    //Populate Map with Data from AreaMap
+}
+
 function createFurnObj(ftype, lat, lng, coord){
     //get the index of the selected item
     
@@ -104,6 +136,8 @@ function createFurnObj(ftype, lat, lng, coord){
     console.log(newFurn);
 
     furnMap.set(mapKey, newFurn);
+
+    //TODO: check if furniture is in an area, if it is add the area_id
 
     if(document.getElementById("laypopup") == null){
             popupDiv = document.createElement("DIV");
@@ -184,6 +218,8 @@ function seatAddHelper(thisFurn){
     }
 
 }
+
+
 
 //Rotation Functionality
 //This function helps rotate the furniture and appends the div after the furniture has been rotated.

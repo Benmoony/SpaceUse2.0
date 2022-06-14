@@ -34,6 +34,7 @@ const loadSurvey = document.getElementById('loadSurveyBtn');
 const showMultiSurvey = document.getElementById('loadMultipleSurvey');
 const msurvey = document.getElementById('msurvey');
 const dsurvey = document.getElementById('dsurvey');
+const saveLay = document.getElementById('saveLayout');
 
 //Layout Builder Button references
 const layoutBuilder = document.getElementById('layoutBuilder');
@@ -92,6 +93,14 @@ ipcRenderer.on('LoadSurveySuccess', function(event, data){
     layoutBuilder.disabled = true;
 });
 
+function loadAreas(){
+    ipcRenderer.send('LoadArea');
+}
+
+ipcRenderer.on('LoadAreasSuccess', function(event, data){
+    addAreas(data);
+})
+
 //Render Functions for Multi Survey
 showMultiSurvey.addEventListener('click',()=>{
     surveyBtn.disabled = true;
@@ -119,6 +128,7 @@ layoutBuilder.addEventListener('click', ()=>{
     surveyBtn.disabled = true;
     loadSurvey.disabled = true;
     showMultiSurvey.disabled = true;
+    drawArea.disabled = true;
     ipcRenderer.send('layoutCreate');
 });
 
@@ -158,9 +168,14 @@ saveFloor.addEventListener('click', ()=>{
 
 saveLayFloor.addEventListener('click', ()=>{
     ipcRenderer.send('SaveLayoutFloor', furnMap, sfloor);
-    alert('Floor ' + sfloor + ' saved!');
+    alert('Floor ' + sfloor + ' layout saved!');
 });
 
+
+saveLay.addEventListener('click', function (event){
+    alert('Saving Layout?');
+    ipcRenderer.send('SaveLayout');
+});
 
 saveSurvey.addEventListener('click', ()=>{
     ipcRenderer.send('SaveSurvey');
@@ -173,6 +188,7 @@ ipcRenderer.on('SaveSuccess', ()=>{
     floorSelect.style.display = "none";
     surveyFloorSelect.style.display = "none";
     multimenu.style.display = "none";
+    layoutMenu.style.display = "none";
     getNameForm.style.display = "block";
     loadSurvey.disabled = false;
     surveyBtn.disabled = false;

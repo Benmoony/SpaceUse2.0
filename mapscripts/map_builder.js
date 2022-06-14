@@ -637,6 +637,7 @@ function addMapPic(){
             furnMap.clear();
             mymap.removeLayer(drawnItems);
             drawnItems = new L.layerGroup().addTo(mymap);
+            loadAreas();
             mymap.invalidateSize();
 
         }
@@ -720,7 +721,10 @@ function drawArea(area){
 		verts.push([area_verts.x,area_verts.y]);
 	}
 	var poly = L.polygon(verts);
-	poly.bindPopup(area.area_name);
+    if(isLayoutEdit === false){
+        poly.bindPopup(area.area_name);
+    }
+	
 
 	return poly;
 }
