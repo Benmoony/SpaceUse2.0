@@ -95,10 +95,14 @@ ipcMain.on('toMain', function(event, sname){
 
 ipcMain.on('back-to-previous',()=>{
   global.shared.surveyArray.length = 0;
+  global.shared.layout.length = 0;
+  global.shared.survey.length = 0;
+  global.shared.createLayout.length = 0;
   console.log("Memory Cleared, type name again");
 });
 
 ipcMain.on('SaveFurniture', function(event, furnMap, sfloor){
+  
   console.log("Saving Furn Map on floor: " + sfloor);
   var curfloor = "";
 
@@ -112,6 +116,90 @@ ipcMain.on('SaveFurniture', function(event, furnMap, sfloor){
   let floorFurn = mapToObj(furnMap);
 
   global.shared.surveyArray[sfloor][curfloor] = floorFurn;
+});
+
+ipcMain.on('layoutCreate', function(event){
+  let Layout = {'Layout': true};
+  global.shared.createLayout.push(Layout);
+
+  let f1 = {'Floor 1': []};
+  let f2 = {'Floor 2': []};
+  let f3 = {'Floor 3': []};
+  global.shared.createLayout.push(f1);
+  global.shared.createLayout.push(f2);
+  global.shared.createLayout.push(f3);
+});
+
+ipcMain.on('SaveLayoutFloor', function(event, furnMap, sfloor){
+  console.log("Saving Furn Map on floor: " + sfloor);
+  var curfloor = "";
+
+  switch(sfloor){
+    case 1: curfloor = "Floor 1"; break;
+    case 2: curfloor = "Floor 2"; break;
+    case 3: curfloor = "Floor 3"; break;
+  }
+
+  //floordata from furn map
+  for(let [key, value] of furnMap){
+    let furnString = "";
+    let num_seats = parseInt(value.num_seats);
+
+    furnString = {
+      "fid": value.furn_id,
+      "num_seats": num_seats,
+      "x": value.x,
+      "y": value.y,
+      "ftype": value.ftype,
+      "degree_offset": value.degree_offset
+    };
+
+    global.shared.createLayout[sfloor][curfloor].push(furnString);
+  }
+
+});
+
+ipcMain.on('SaveLayout', ()=>{
+  
+  let data = global.shared.createLayout;
+  let areadata = global.shared.areadata;
+  let toconvert = { 
+    "Layout": true,
+    "Floor 1": data[1]["Floor 1"],
+    "Floor 2": data[2]["Floor 2"],
+    "Floor 3": data[3]["Floor 3"],
+    "Areas": areadata["Areas"]
+  }
+
+  let jsonObject = JSON.stringify(toconvert);
+  let dpath = './Layouts/' + "NewLayout" + '.json'
+
+  dialog.showSaveDialog({
+    title: 'Select the File Path to save',
+    defaultPath: path.join(__dirname, dpath),
+    buttonLabel: 'Save',
+    filters: [
+      {
+        name: 'Text Files',
+        extensions: ['json']
+      }
+    ],
+    properties: []
+  }).then(file => {
+    if (!file.canceled) {
+      console.log(file.filePath.toString());
+        
+      // Creating and Writing to the sample.txt file
+      fs.writeFile(file.filePath.toString(),jsonObject, function (err) {
+        if (err) throw err;
+          console.log('Saved!');
+          global.shared.createLayout.length = 0;
+          win.webContents.send('SaveSuccess');
+        });
+      }
+    }).catch(err => {
+      console.log(err)
+    });
 });
 
 ipcMain.on('LoadLayout',()=>{
@@ -159,6 +247,14 @@ ipcMain.on('LoadLayout',()=>{
 
 });
 
+//loads area file for layout builder
+ipcMain.on('LoadArea', ()=>{
+  //TODO FUTURE: Create area 
+  let filepath = path.join(__dirname, './mapscripts/areas.json');
+  let newareadata = JSON.parse(fs.readFileSync(filepath));
+  global.shared.areadata = newareadata;
+  win.webContents.send('LoadAreasSuccess', newareadata);
+});
 
 ipcMain.on('LoadSurvey', ()=>{
   //Load File

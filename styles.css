@@ -62,6 +62,13 @@ body{
     height: 100%;
 }
 
+#LayoutMenu{
+    display:none;
+    padding: 1em;
+    background-color: rgb(79, 107, 79);
+    height:fit-content;
+    color: rgb(255, 255, 255);
+}
 
 .navContainer{
     margin: 0;
