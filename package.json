@@ -24,7 +24,7 @@
     "electron-packager": "^15.4.0",
     "jquery": "^3.6.1",
     "json-2-csv": "^3.17.0",
-    "leaflet": "^1.8.0",
+    "leaflet": "^1.9.1",
     "sizzle": "^2.3.6"
   }
 }
